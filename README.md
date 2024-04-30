@@ -7,7 +7,7 @@ This is a packaged designed to facilitate correcting for distributional bias in 
 Installation
 -------------------
 ```bash
-pip install git+https://github.com/korem-lab/RebalancedLeaveOneOut.git
+pip install git+https://github.com/korem-lab/RebalancedCV.git
 ```
 
 Example
@@ -16,7 +16,7 @@ We demonstrate the following snippet of code to utilize out rebalanced leave-one
 
 ```python
 from sklearn.linear_model import LogisticRegressionCV
-from revalancedcv import RebalancedLeaveOneOut
+from rebalancedcv import RebalancedLeaveOneOut
 
 ## given some `X` matrix, and a `y` binary vector
 rloo = RebalancedLeaveOneOut()
