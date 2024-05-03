@@ -8,9 +8,14 @@ from sklearn.model_selection import BaseCrossValidator
 from sklearn.utils.validation import _num_samples, check_array, column_or_1d
 import numpy as np
 
-
+import numbers
 from sklearn.utils.validation import _deprecate_positional_args
 from sklearn.utils.multiclass import type_of_target
+from abc import ABCMeta, abstractmethod
+from itertools import chain, combinations
+
+def flatten(xss):
+    return [x for xs in xss for x in xs]
 
 class RebalancedLeaveOneOut(BaseCrossValidator):
     """Rebalanced Leave-One-Out cross-validator, as described in `Austin et al.`
@@ -126,7 +131,7 @@ class RebalancedLeaveOneOut(BaseCrossValidator):
     
     
 class _RebalanacedBaseKFold(BaseCrossValidator, metaclass=ABCMeta):
-    """Base class for Rebalanced KFold, GroupKFold, and StratifiedKFold"""
+    """Base class for RebalancedKFold"""
 
     @abstractmethod
     @_deprecate_positional_args
@@ -264,7 +269,7 @@ class RebalancedKFold(_RebalanacedBaseKFold):
     >>> rkf = RebalancedKFold(n_splits=2)
     >>> rkf.get_n_splits(X, y)
     2
-    >>> print(skf)
+    >>> print(rkf)
     RebalancedKFold(n_splits=2, random_state=None, shuffle=False)
     >>> for train_index, test_index in rkf.split(X, y):
     ...     print("TRAIN:", train_index, "TEST:", test_index)
@@ -402,5 +407,155 @@ class RebalancedKFold(_RebalanacedBaseKFold):
                         dtype=None
                         )
         return super().split(X, y, groups)
+
+    
+class RebalancedLeavePOut(BaseCrossValidator):
+    """Leave-P-Out cross-validator.
+
+    Provides train/test indices to split data in train/test sets. This results
+    in testing on all distinct samples of size p, while a remaining n - 2p
+    samples form the training set in each iteration. The additional `p` training 
+    samples are removed to ensure that no distributional bias occurs across folds
+    
+    This class is designed to have the same functionality and 
+    implementation structure as scikit-learn's ``LeavePOut()``
+    
+    Note: ``RebalancedLeavePOut(p)`` is NOT equivalent to
+    ``RebalancedKFold(n_splits=n_samples // p)`` which creates non-overlapping test sets.
+
+    Due to the high number of iterations which grows combinatorically with the
+    number of samples this cross-validation method can be very costly. For
+    large datasets one should favor :class:`RebalancedKFold` or `RebalancedLeaveOneOut`
+    
+
+    Parameters
+    ----------
+    p : int
+        Size of the test sets. Must be strictly less than the one half of the number of
+        samples.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from RebalanvedCV import RebalancedLeavePOut
+    >>> X = np.array([[1, 2], [3, 4], [5, 6], [7, 8]])
+    >>> y = np.array([1, 2, 3, 4]) 
+    >>> rlpo = RebalancedLeavePOut(2)
+    >>> rlpo.get_n_splits(X)
+    6
+    >>> print(lpo)
+    RebalancedLeavePOut(p=2)
+    >>> for i, (train_index, test_index) in enumerate(rlpo.split(X)):
+    ...     print(f"Fold {i}:")
+    ...     print(f"  Train: index={train_index}")
+    ...     print(f"  Test:  index={test_index}")
+    Fold 0:
+      Train: index=[2 3]
+      Test:  index=[0 1]
+    Fold 1:
+      Train: index=[1 3]
+      Test:  index=[0 2]
+    Fold 2:
+      Train: index=[1 2]
+      Test:  index=[0 3]
+    Fold 3:
+      Train: index=[0 3]
+      Test:  index=[1 2]
+    Fold 4:
+      Train: index=[0 2]
+      Test:  index=[1 3]
+    Fold 5:
+      Train: index=[0 1]
+      Test:  index=[2 3]
+    """
+
+    def __init__(self, p):
+        self.p = p
+        
+        
+    def split(self, X, y, groups=None, seed=None):
+        """Generate indices to split data into training and test set.
+
+        Parameters
+        ----------
+        X : array-like of shape (n_samples, n_features)
+            Training data, where `n_samples` is the number of samples
+            and `n_features` is the number of features.
+
+        y : array-like of shape (n_samples,)
+            The target variable for supervised learning problems.
+
+        groups : array-like of shape (n_samples,), default=None
+            Group labels for the samples used while splitting the dataset into
+            train/test set.
+            
+        seed : to enforce consistency in the subsampling
+
+        Yields
+        ------
+        train : ndarray
+            The training set indices for that split.
+
+        test : ndarray
+            The testing set indices for that split.
+        """
+        
+        if seed is not None:
+            np.random.seed(seed)
+            
+        X, y, groups = indexable(X, y, groups)
+
+        indices = np.arange(_num_samples(X))
+        for test_index in self._iter_test_masks(X, y, groups):
+            train_index = indices[np.logical_not(test_index)]
+
+            n_to_drop = self.p - np.bincount(y[test_index], 
+                                             minlength=self.n_classes)
+            y_vals_to_drop = np.unique( y.astype(int)) 
+
+            to_drop_inds = flatten( [ 
+                        list( np.random.choice(
+                                train_index[ y[train_index] == y_vals_to_drop[i] ], 
+                                                         size=n_to_drop[i], 
+                                                         replace=False) ) 
+                                 for i in range(len(n_to_drop)) ] )
+
+            train_index = np.array([ a for a in train_index 
+                                     if a not in to_drop_inds] )
+            test_index = indices[test_index]
+            yield train_index, test_index
+
+    def _iter_test_indices(self, X, y, groups=None):
+        n_samples = _num_samples(X)
+        
+        self.n_classes = np.unique(y).shape[0]
+        
+        if n_samples <= self.p:
+            raise ValueError(
+                "p={} must be strictly less than the number of samples={}".format(
+                    self.p, n_samples
+                )
+            )
+        for combination in combinations(range(n_samples), self.p):
+            yield np.array(combination)
+
+    def get_n_splits(self, X, y=None, groups=None):
+        """Returns the number of splitting iterations in the cross-validator.
+
+        Parameters
+        ----------
+        X : array-like of shape (n_samples, n_features)
+            Training data, where `n_samples` is the number of samples
+            and `n_features` is the number of features.
+
+        y : object
+            Always ignored, exists for compatibility.
+
+        groups : object
+            Always ignored, exists for compatibility.
+        """
+        if X is None:
+            raise ValueError("The 'X' parameter should not be None.")
+        return int(comb(_num_samples(X), self.p, exact=True))
 
 
