@@ -28,7 +28,6 @@ from sklearn.metrics import roc_auc_score
 np.random.seed(1)
 
 ## given some random `X` matrix, and a `y` binary vector
-X=np.random.normal(size=(100, 5))
 X = np.random.rand(100, 10)
 y = np.random.rand(100) > 0.5
 
