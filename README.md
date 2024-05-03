@@ -63,47 +63,26 @@ print('Rebalanceed Leave-one-out auROC: {:.2f}'\
     Rebalanceed Leave-one-out auROC: 0.48
 
 
-As demontrated in this example, neglecting to account for distributional bias in the cross-valiation classes can decreased evaluated model performance. For more details on why this happens, please refer to **Austin et al. in prep** .
+As demontrated in this example, neglecting to account for distributional bias in the cross-valiation classes can greatly decrease evaluated model performance. For more details on why this happens, please refer to **Austin et al. in prep** .
 
 
 We note that the example's code structure appraoch would apply to this package's other `RebalancedKFold` and `RebalancedLeavePOut` classes.
-
-
-**Parameters for `.split()` method**
-----------
-All three of this package's methods use the `split` method, which all use the following parameters.
-`X` : array-like of shape (n_samples, n_features); Training data, where `n_samples` is the number of samples and `n_features` is the number of features.
-
-`y` : array-like of shape (n_samples,); The target variable for supervised learning problems.  At least two observations per class are needed for RebalancedLeaveOneOut
-
-`groups` : array-like of shape (n_samples,), default=None; Group labels for the samples used while splitting the dataset into
-    train/test set.
-    
-`seed` : Integer, default=None; can be specified to enforce consistency in the subsampling
-
-**Yields**
--------
-`train_index` : ndarray
-    The training set indices for that split.
-`test_index` : ndarray
-    The testing set indices for that split.
-
 
 **Classes**
 ---------
 
 ### RebalancedLeaveOneOut
 
-Provides train/test indices to split data in train/test sets with rebalancing to ensure that all training folds have identical class balances. Each sample is used once as a test set, while the remaining samples form the training set.
+Provides train/test indices to split data in train/test sets with rebalancing to ensure that all training folds have identical class balances. Each sample is used once as a test set, while the remaining samples form the training set. See sklearn.model_selection.LeaveOneOut for more details on Leave-one-out cross-validation. 
 
-No additional parameters are used for this class (see sklearn.model_selection.LeaveOneOut for more details).
+##### **Parameters**
+No parameters are used for this class 
 
 ### RebalancedKFold
 
 Provides train/test indices to split data in `n_splits` folds, with rebalancing to ensure that all training folds have identical class balances. Each sample is only ever used within a single test fold. `RebalancedKFold` uses the following parameters, which are the same as the scikit-learn `StratifiedKFold` parameters (see sklearn.model_selection.StratifiedKFold for more details):
 
-**Parameters**
-----------
+##### **Parameters**
     n_splits : int, default=5
         Number of folds. Must be at least 2.
 
@@ -127,11 +106,30 @@ Provides train/test indices to split data in `n_splits` folds, with rebalancing 
 Provides train/test indices to split data in train/test sets with rebalancing to ensure that all training folds have identical class balances. This cross-validation tests on all distinct samples of size p, while a remaining n - 2p samples form the training set in each iteration, with an additional `p` samples used to subsamples from within the training set.
 (see sklearn.model_selection.LeavePOut for more details).
 
-**Parameters**
-----------
+##### **Parameters**
      p : int
         Size of the test sets. Must be strictly less than one half of the number of samples.
 
+
+**Parameters for `.split()` method**
+----------
+All three of this package's classes use the `split` method, which all use the following parameters.
+`X` : array-like of shape (n_samples, n_features); Training data, where `n_samples` is the number of samples and `n_features` is the number of features.
+
+`y` : array-like of shape (n_samples,); The target variable for supervised learning problems.  At least two observations per class are needed for RebalancedLeaveOneOut
+
+`groups` : array-like of shape (n_samples,), default=None; Group labels for the samples used while splitting the dataset into
+    train/test set.
+    
+`seed` : Integer, default=None; can be specified to enforce consistency in the subsampling
+
+**Yields**
+-------
+`train_index` : ndarray
+    The training set indices for that split.
+    
+`test_index` : ndarray
+    The testing set indices for that split.
 
 
 **Citation**
