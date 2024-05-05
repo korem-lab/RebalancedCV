@@ -1,0 +1,190 @@
+---
+title: '**RebalancedCV**: Solving distributional bias during cross-validation'
+output: 
+    html_document:
+       theme: yeti
+---
+<style>
+.darkgreen {
+  background-color: #577836;
+  color: white;
+  border: 2px solid black;
+  margin: 20px;
+  padding: 20px;
+} 
+</style>
+
+<style>
+    body { 
+            background-color: #4D251C;
+            text-color: whitesmoke;
+            color: whitesmoke;
+            font-family: Palatino;
+            font-size: 12pt;
+            margin: 20px;
+            padding: 20px;
+            }
+  a:link {
+        color: lightblue; 
+        background-color: transparent; 
+      }
+ a:visited {
+            color: lightpurple;
+            background-color: transparent;
+          }
+  a:active {
+    color: lightpurple;
+    background-color: transparent;
+  }
+  a:hover {
+    color: lightpurple;
+    background-color: transparent;
+    text-decoration: underline;
+  }
+
+</style>
+<img src='images/RLOOCV-logo.png' align="right" height="300" />
+<link rel="icon" type="image/png" href="images/RLOOCV-logo.png" />
+</center>
+
+--------------------------
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy(c('r', 'python', 'bash'), 
+               position = c("top", "right"),
+               color='brown',
+               tooltip_message = "Copy",
+               tooltip_success = "Copied!"
+               )
+```
+<div class='body'>
+<br>
+
+Welcome to [_RebalancedCV_](index.html)! This is a python package designed to facilitate correcting for distributional bias during cross validation.  
+
+<br>
+&nbsp;
+</div>
+RebalancedCV conatins the following three classes: [_RebalancedLeaveOneOut_](RebalancedLeaveOneOut.html), [_RebalancedKFold_](RebalancedKFold.html), and [_RebalancedLeavePOut_](RebalancedLeavePOut.html). These are implementations for `Leave One Out`, `Stratified K-Fold`, and `Leave P Out` cross-validation with sub-sampling within training sets to ensure that, for any cross-validation scheme, the class balances across all training folds are identical.
+
+<br>
+
+## Installation
+<div class="darkgreen">
+```bash
+pip install git+https://github.com/korem-lab/RebalancedCV.git
+```
+</div>
+The only dependencies for installation are `python` and `scikit-learn`
+<br><br>
+
+## Example
+
+```python
+import numpy as np
+from rebalancedcv import RebalancedLeaveOneOut
+
+X = np.array([[1, 2, 1, 2], [3, 4, 3, 4]]).T
+y = np.array([1, 2, 1, 2])
+rloo = RebalancedLeaveOneOut()
+for i, (train_index, test_index) in enumerate(rloo.split(X, y)):
+    print(f"Fold {i}:")
+    print(f"  Train: index={train_index}")
+    print(f"  Test:  index={test_index}")
+```
+
+    Fold 0:
+      Train: index=[2 3]
+      Test:  index=[0]
+    Fold 1:
+      Train: index=[0 3]
+      Test:  index=[1]
+    Fold 2:
+      Train: index=[0 1]
+      Test:  index=[2]
+    Fold 3:
+      Train: index=[0 1]
+      Test:  index=[3]
+
+<br>
+
+## Background
+
+It was recently shown that removing a fraction of a dataset into a testing fold can artificially create a shift in label averages across training folds that is inversely correlated with that of their corresponding test folds. To address the issue, this package automatically subsamples points from within the training set to remove any differences in label average across training folds. 
+
+The following example illustrates how this small correction can have a large impact on machine learning performance metrics, with code demonstrations of scikit-learn's `LeaveOneOut` and RebalancedCV's `RebalancedLeaveOneOut`. This analysis uses a randomly generated observation matrix `X` and a binary outcome vector `y`. By construction, this is an example for which a fair evaluation of a machine learning model should be close to the expected performance of a random guess, which is 0.5. 
+
+```python
+import numpy as np 
+import pandas as pd
+from sklearn.linear_model import LogisticRegressionCV
+from sklearn.model_selection import LeaveOneOut
+from rebalancedcv import RebalancedLeaveOneOut
+from sklearn.metrics import roc_auc_score
+np.random.seed(1)
+
+## given some random `X` matrix, and a `y` binary vector
+X = np.random.rand(100, 10)
+y = np.random.rand(100) > 0.5
+
+## Leave-one-out evaluation
+loo = LeaveOneOut()
+loocv_predictions = [ LogisticRegressionCV()\
+                                .fit(X[train_index], y[train_index])\
+                                .predict_proba(X[test_index]
+                                            )[:, 1][0]
+              for train_index, test_index in loo.split(X, y) ]
+
+## Since all the data is random, a fair evaluation
+## should yield au auROC close to 0.5
+print('Leave One Out auROC: {:.2f}'\
+              .format( roc_auc_score(y, loocv_predictions) ) )
+
+## Rebalanced leave-one-out evaluation
+rloo = RebalancedLeaveOneOut()
+rloocv_predictions = [ LogisticRegressionCV()\
+                                .fit(X[train_index], y[train_index])\
+                                .predict_proba(X[test_index]
+                                            )[:, 1][0]
+              for train_index, test_index in rloo.split(X, y) ]
+
+## Since all the data is random, a fair evaluation
+## should yield au auROC close to 0.5
+print('Rebalanceed Leave-one-out auROC: {:.2f}'\
+              .format(  roc_auc_score(y, rloocv_predictions) ) )
+```
+
+    Leave One Out auROC: 0.00
+    Rebalanceed Leave-one-out auROC: 0.48
+
+
+As demonstrated in this example, neglecting to account for distributional bias in the cross-validation classes can greatly decrease evaluated model performance. For more details on why this happens, please refer to [our manuscript](google.com).
+
+We note that the example's code structure appraoch would apply to this package's other `RebalancedKFold` and `RebalancedLeavePOut` classes.
+
+
+
+All classes from this package provide train/test indices to split data in train/test sets while rebalancing the training set to account for distributional bias. This package is designed to enable automated rebalancing for the cross-valition implementations in scikit-learn's `LeaveOneOut`, `StratifiedKFold`, and `LeavePOut`, through the `RebalancedCV` classes `RebalancedLeaveOneOut`, `RebalancedKFold`, and `RebalancedLeavePOut`. These Rebalanced classes are designed to work in the exact same code structure and implementation use cases as their scikit-learn equivalents, with the only difference being a subsampling within the provided training indices. 
+
+For more details, we provide further background and walkthroughs for each of these three classes in their respective documentation tabs.
+
+<br>
+
+Please report any issues faced while using RebalancedCV in our [Issues Page](https://github.com/korem-lab/RebalancedCV/issues), or email [gia2105@columbia.edu](gia2105@columbia.edu). 
+
+<br>
+
+## Citation
+<style>
+.citation {
+  background-color: #262C56;
+  color: white;
+  border: 2px solid black;
+  margin: 20px;
+  padding: 20px;
+} 
+</style>
+
+<div class="citation">
+Austin, G.I. et al. "Correcting for distributional bias during leave-P-out cross-validation improves machine learning performance evaluation" (2024). fill in link
+</div>
+

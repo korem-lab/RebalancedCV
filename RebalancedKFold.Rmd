@@ -1,0 +1,211 @@
+---
+title: 
+output: 
+    html_document:
+       theme: yeti
+---
+
+<style>
+.darkgreen {
+  background-color:#577836;
+  color: white;
+  border: 2px solid black;
+  margin: 20px;
+  padding: 20px;
+} 
+</style>
+
+<style>
+    body { 
+            background-color: #4D251C;
+            text-color: whitesmoke;
+            color: whitesmoke;
+            font-family: Palatino;
+            font-size: 12pt;
+            margin: 20px;
+            padding: 20px;
+            }
+    a:link {
+            color: darkblue; 
+            background-color: transparent; 
+            }
+  a:visited {
+            color: darkpurple;
+            background-color: transparent;
+          }
+  a:active {
+        color: darkpurple;
+        background-color: transparent;
+      }
+  a:hover {
+        color: darkpurple;
+        background-color: transparent;
+        text-decoration: underline;
+      }
+</style>
+
+<style>
+.darkblue {
+  background-color: #262C56;
+  color: white;
+  border: 2px solid #577836;
+  margin: 20px;
+  padding:20px;
+} 
+</style>
+
+<br>
+
+<center> <h1> rebalancedcv.**RebalancedKFold** </h1> </center>
+
+
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy(c('r', 'python', 'bash'), 
+               position = c("top", "right"),
+               color='brown',
+               tooltip_message = "Copy",
+               tooltip_success = "Copied!"
+               )
+```
+
+<style>
+.darkgrey {
+  background-color: #333333;
+  color: white;
+  border: 2px solid #577836;
+  margin: 20px;
+  padding:10px;
+} 
+</style>
+<div class="darkgrey">
+*class* rebalancedcv.**RebalancedKFold**(n_splits=5, shuffle=False, random_state=None)
+</div>
+<br>
+
+Description
+------------
+
+<div class="darkgreen">
+
+Stratified K-Fold cross-validator with rebalancing.
+
+Provides train/test indices to split data in train/test sets, with sub-sampling within the training set to ensure that all training folds have identical class balances.
+
+This class is designed to have the same functionality and 
+implementation structure as scikit-learn's ```StratifiedKFold```.
+
+</div>
+
+<br>
+
+Parameters
+-----------
+
+<div class="darkgreen">
+
+    n_splits : int, default=5
+        Number of folds. Must be at least 2.
+
+    shuffle : bool, default=False
+        Whether to shuffle each class's samples before splitting into batches.
+        Note that the samples within each split will not be shuffled.
+
+    random_state : int, RandomState instance or None, default=None
+        When `shuffle` is True, `random_state` affects the ordering of the
+        indices, which controls the randomness of each fold for each class.
+        Otherwise, leave `random_state` as `None`.
+        Pass an int for reproducible output across multiple function calls.
+        See :term:`Glossary <random_state>`.
+        
+These parameters are designed to match the structure and functionality of scikit-learn's `StratifiedKFold`. 
+</div>
+
+
+
+
+
+Example
+--------
+
+```python
+### Observing the indices on a small example dataset
+import numpy as np
+from rebalancedcv import RebalancedKFold
+
+X = np.array([[1, 2, 1, 2, 1], [3, 4, 3, 4, 3]]).T
+y = np.array([1, 2, 1, 2, 1])
+rloo = RebalancedKFold(n_splits=2)
+rloo.get_n_splits(X, y)
+for i, (train_index, test_index) in enumerate(rloo.split(X, y)):
+    print(f"Fold {i}:")
+    print(f"  Train: index={train_index}")
+    print(f"  Test:  index={test_index}")
+```
+
+    Fold 0:
+      Train: index=[3 4]
+      Test:  index=[0 1 2]
+    Fold 1:
+      Train: index=[0 1]
+      Test:  index=[3 4]
+<br>
+
+Methods
+--------
+
+The methods of the `RebalancedLeavePOut` class are designed to enable identical funcitonality to scikit-learn's [`LeavePOut`](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.LeavePOut.html).
+
+<div class="darkgreen">
+<b>split(X, y, groups=None, seed=None)</b> 
+        <br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+       Generate indices to split data into training and test set.
+
+        Parameters
+        ----------
+        X : array-like of shape (n_samples, n_features)
+            Training data, where `n_samples` is the number of samples
+            and `n_features` is the number of features.
+
+        y : array-like of shape (n_samples,)
+            The target variable for supervised learning problems.
+
+        groups : array-like of shape (n_samples,), default=None
+            Group labels for the samples used while splitting the dataset into
+            train/test set.
+            
+        seed : to enforce consistency in the subsampling
+
+        Yields
+        ------
+        train : ndarray
+            The training set indices for that split.
+
+        test : ndarray
+            The testing set indices for that split.    
+</div>
+
+
+<style>
+.seealso {
+  background-color: #F6B302;
+  color: black;
+  border: 2px solid black;
+  margin: 20px;
+  padding: 20px;
+} 
+
+l{color: darkgreen}
+</style>
+
+
+<div class="seealso">
+**See also:**<br>
+[_RebalancedLeaveOneOut_](ebalancedLeaveOneOut.html)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Leave-one-out iterator with training set rebalancing<br>
+[_RebalancedLeavePOut_](RebalancedLeavePOut.html)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Leave-P-out iterator with training set rebalancing<br>
+<br>
+For more background on Stratified K-Fold, refer to the scikit-learn [User Guide](https://scikit-learn.org/stable/modules/cross_validation.html#k-fold).
+    </div>

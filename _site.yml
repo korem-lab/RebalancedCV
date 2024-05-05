@@ -1,0 +1,33 @@
+name: RebalancedCV
+output_dir: '.'
+favicon: images/RLOOCV-logo.png
+navbar:
+  title: RebalancedCV
+  icon: fa-book
+  left:
+  - text: RebalancedLeaveOneOut
+    href: RebalancedLeaveOneOut.html
+  - text: RebalancedKFold
+    href: RebalancedKFold.html
+  - text: RebalancedLeavePOut
+    href: RebalancedLeavePOut.html
+    icon: fa-object-group
+  - text: Related documents
+    icon: fa-binoculars
+    menu:
+    - text: RebalancedCV Manuscript
+      href: www.google.com
+  right:
+  - icon: fa-comment
+    href: https://github.com/korem-lab/RebalancedCV/issues
+  - icon: fa-github fa-lg
+    href: https://github.com/korem-lab/RebalancedCV/
+
+output:
+  html_document:
+    theme: cosmo
+    self_contained: no
+    in_header: images/RLOOCV-logo.png
+    highlight: textmate
+
+

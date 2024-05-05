@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>RebalancedCV: Solving distributional bias during cross-validation</title>
+
+<script src="index_files/header-attrs-2.20/header-attrs.js"></script>
+<script src="index_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="index_files/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
+<script src="index_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="index_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="index_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="index_files/navigation-1.1/tabsets.js"></script>
+<link href="index_files/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="index_files/highlightjs-9.12.0/highlight.js"></script>
+<script src="index_files/clipboard-1.7.1/clipboard.min.js"></script>
+<link href="index_files/primer-tooltips-1.4.0/build.css" rel="stylesheet" />
+<link href="index_files/klippy-0.0.0.9500/css/klippy.min.css" rel="stylesheet" />
+<script src="index_files/klippy-0.0.0.9500/js/klippy.min.js"></script>
+<link href="index_files/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="index_files/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">RebalancedCV</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="RebalancedLeaveOneOut.html">RebalancedLeaveOneOut</a>
+</li>
+<li>
+  <a href="RebalancedKFold.html">RebalancedKFold</a>
+</li>
+<li>
+  <a href="RebalancedLeavePOut.html">
+    <span class="fa fa-object-group"></span>
+     
+    RebalancedLeavePOut
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="fa fa-binoculars"></span>
+     
+    Related documents
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="www.google.com">RebalancedCV Manuscript</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/korem-lab/RebalancedCV/issues">
+    <span class="fa fa-comment"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="https://github.com/korem-lab/RebalancedCV/">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore"><strong>RebalancedCV</strong>: Solving
+distributional bias during cross-validation</h1>
+
+</div>
+
+
+<style>
+.darkgreen {
+  background-color: #577836;
+  color: white;
+  border: 2px solid black;
+  margin: 20px;
+  padding: 20px;
+} 
+</style>
+<style>
+    body { 
+            background-color: #4D251C;
+            text-color: whitesmoke;
+            color: whitesmoke;
+            font-family: Palatino;
+            font-size: 12pt;
+            margin: 20px;
+            padding: 20px;
+            }
+  a:link {
+        color: lightblue; 
+        background-color: transparent; 
+      }
+ a:visited {
+            color: lightpurple;
+            background-color: transparent;
+          }
+  a:active {
+    color: lightpurple;
+    background-color: transparent;
+  }
+  a:hover {
+    color: lightpurple;
+    background-color: transparent;
+    text-decoration: underline;
+  }
+
+</style>
+<img src='images/RLOOCV-logo.png' align="right" height="300" />
+<link rel="icon" type="image/png" href="images/RLOOCV-logo.png" />
+</center>
+<hr />
+<script>
+  addClassKlippyTo("pre.r, pre.python, pre.bash");
+  addKlippy('right', 'top', '#A52A2A', '1', 'Copy', 'Copied!');
+</script>
+<div class="body">
+<p><br></p>
+<p>Welcome to <a href="index.html"><em>RebalancedCV</em></a>! This is a
+python package designed to facilitate correcting for distributional bias
+during cross validation.</p>
+<p><br>  </p>
+</div>
+<p>RebalancedCV conatins the following three classes: <a
+href="RebalancedLeaveOneOut.html"><em>RebalancedLeaveOneOut</em></a>, <a
+href="RebalancedKFold.html"><em>RebalancedKFold</em></a>, and <a
+href="RebalancedLeavePOut.html"><em>RebalancedLeavePOut</em></a>. These
+are implementations for <code>Leave One Out</code>,
+<code>Stratified K-Fold</code>, and <code>Leave P Out</code>
+cross-validation with sub-sampling within training sets to ensure that,
+for any cross-validation scheme, the class balances across all training
+folds are identical.</p>
+<p><br></p>
+<div id="installation" class="section level2">
+<h2>Installation</h2>
+<div class="darkgreen">
+<pre class="bash"><code>pip install git+https://github.com/korem-lab/RebalancedCV.git</code></pre>
+</div>
+<p>The only dependencies for installation are <code>python</code> and
+<code>scikit-learn</code> <br><br></p>
+</div>
+<div id="example" class="section level2">
+<h2>Example</h2>
+<pre class="python"><code>import numpy as np
+from rebalancedcv import RebalancedLeaveOneOut
+
+X = np.array([[1, 2, 1, 2], [3, 4, 3, 4]]).T
+y = np.array([1, 2, 1, 2])
+rloo = RebalancedLeaveOneOut()
+for i, (train_index, test_index) in enumerate(rloo.split(X, y)):
+    print(f&quot;Fold {i}:&quot;)
+    print(f&quot;  Train: index={train_index}&quot;)
+    print(f&quot;  Test:  index={test_index}&quot;)</code></pre>
+<pre><code>Fold 0:
+  Train: index=[2 3]
+  Test:  index=[0]
+Fold 1:
+  Train: index=[0 3]
+  Test:  index=[1]
+Fold 2:
+  Train: index=[0 1]
+  Test:  index=[2]
+Fold 3:
+  Train: index=[0 1]
+  Test:  index=[3]</code></pre>
+<p><br></p>
+</div>
+<div id="background" class="section level2">
+<h2>Background</h2>
+<p>It was recently shown that removing a fraction of a dataset into a
+testing fold can artificially create a shift in label averages across
+training folds that is inversely correlated with that of their
+corresponding test folds. To address the issue, this package
+automatically subsamples points from within the training set to remove
+any differences in label average across training folds.</p>
+<p>The following example illustrates how this small correction can have
+a large impact on machine learning performance metrics, with code
+demonstrations of scikit-learn’s <code>LeaveOneOut</code> and
+RebalancedCV’s <code>RebalancedLeaveOneOut</code>. This analysis uses a
+randomly generated observation matrix <code>X</code> and a binary
+outcome vector <code>y</code>. By construction, this is an example for
+which a fair evaluation of a machine learning model should be close to
+the expected performance of a random guess, which is 0.5.</p>
+<pre class="python"><code>import numpy as np 
+import pandas as pd
+from sklearn.linear_model import LogisticRegressionCV
+from sklearn.model_selection import LeaveOneOut
+from rebalancedcv import RebalancedLeaveOneOut
+from sklearn.metrics import roc_auc_score
+np.random.seed(1)
+
+## given some random `X` matrix, and a `y` binary vector
+X = np.random.rand(100, 10)
+y = np.random.rand(100) &gt; 0.5
+
+## Leave-one-out evaluation
+loo = LeaveOneOut()
+loocv_predictions = [ LogisticRegressionCV()\
+                                .fit(X[train_index], y[train_index])\
+                                .predict_proba(X[test_index]
+                                            )[:, 1][0]
+              for train_index, test_index in loo.split(X, y) ]
+
+## Since all the data is random, a fair evaluation
+## should yield au auROC close to 0.5
+print(&#39;Leave One Out auROC: {:.2f}&#39;\
+              .format( roc_auc_score(y, loocv_predictions) ) )
+
+## Rebalanced leave-one-out evaluation
+rloo = RebalancedLeaveOneOut()
+rloocv_predictions = [ LogisticRegressionCV()\
+                                .fit(X[train_index], y[train_index])\
+                                .predict_proba(X[test_index]
+                                            )[:, 1][0]
+              for train_index, test_index in rloo.split(X, y) ]
+
+## Since all the data is random, a fair evaluation
+## should yield au auROC close to 0.5
+print(&#39;Rebalanceed Leave-one-out auROC: {:.2f}&#39;\
+              .format(  roc_auc_score(y, rloocv_predictions) ) )</code></pre>
+<pre><code>Leave One Out auROC: 0.00
+Rebalanceed Leave-one-out auROC: 0.48</code></pre>
+<p>As demonstrated in this example, neglecting to account for
+distributional bias in the cross-validation classes can greatly decrease
+evaluated model performance. For more details on why this happens,
+please refer to <a href="google.com">our manuscript</a>.</p>
+<p>We note that the example’s code structure appraoch would apply to
+this package’s other <code>RebalancedKFold</code> and
+<code>RebalancedLeavePOut</code> classes.</p>
+<p>All classes from this package provide train/test indices to split
+data in train/test sets while rebalancing the training set to account
+for distributional bias. This package is designed to enable automated
+rebalancing for the cross-valition implementations in scikit-learn’s
+<code>LeaveOneOut</code>, <code>StratifiedKFold</code>, and
+<code>LeavePOut</code>, through the <code>RebalancedCV</code> classes
+<code>RebalancedLeaveOneOut</code>, <code>RebalancedKFold</code>, and
+<code>RebalancedLeavePOut</code>. These Rebalanced classes are designed
+to work in the exact same code structure and implementation use cases as
+their scikit-learn equivalents, with the only difference being a
+subsampling within the provided training indices.</p>
+<p>For more details, we provide further background and walkthroughs for
+each of these three classes in their respective documentation tabs.</p>
+<p><br></p>
+<p>Please report any issues faced while using RebalancedCV in our <a
+href="https://github.com/korem-lab/RebalancedCV/issues">Issues Page</a>,
+or email <a href="gia2105@columbia.edu">gia2105@columbia.edu</a>.</p>
+<p><br></p>
+</div>
+<div id="citation" class="section level2">
+<h2>Citation</h2>
+<style>
+.citation {
+  background-color: #262C56;
+  color: white;
+  border: 2px solid black;
+  margin: 20px;
+  padding: 20px;
+} 
+</style>
+<div class="citation">
+<p>Austin, G.I. et al. “Correcting for distributional bias during
+leave-P-out cross-validation improves machine learning performance
+evaluation” (2024). fill in link</p>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
