@@ -7,12 +7,15 @@ output:
 
 <style>
 .darkgreen {
-  background-color:#577836;
+  background-color: #577836;
   color: white;
   border: 2px solid black;
   margin: 20px;
   padding: 20px;
 } 
+  li {
+    list-style-type: none
+  }
 </style>
 
 <style>
@@ -25,23 +28,23 @@ output:
             margin: 20px;
             padding: 20px;
             }
-    a:link {
-            color: darkblue; 
+   a:link {
+            color: #577836; 
             background-color: transparent; 
             }
   a:visited {
-            color: darkpurple;
+            color: #577836;
             background-color: transparent;
           }
   a:active {
-        color: darkpurple;
-        background-color: transparent;
-      }
+    color: #577836;
+    background-color: transparent;
+  }
   a:hover {
-        color: darkpurple;
-        background-color: transparent;
-        text-decoration: underline;
-      }
+    color: #577836;
+    background-color: transparent;
+    text-decoration: underline;
+  }
 </style>
 
 <style>
@@ -102,23 +105,20 @@ Parameters
 -----------
 
 <div class="darkgreen">
-
-    n_splits : int, default=5
-        Number of folds. Must be at least 2.
-
-    shuffle : bool, default=False
-        Whether to shuffle each class's samples before splitting into batches.
-        Note that the samples within each split will not be shuffled.
-
-    random_state : int, RandomState instance or None, default=None
-        When `shuffle` is True, `random_state` affects the ordering of the
+* <b>n_splits : int, default=5</b>
+  * Number of folds. Must be at least 2.
+* <hr style="height: 2.5px; background-color: white; margin: 1px">
+* <b>shuffle : bool, default=False</b>
+  * Whether to shuffle each class's samples before splitting into batches. Note that the samples within each split will not be shuffled.
+* <hr style="height: 2.5px; background-color: white; margin: 1px">
+* <b>random_state : int, RandomState instance or None, default=None</b>
+  * When `shuffle` is True, `random_state` affects the ordering of the
         indices, which controls the randomness of each fold for each class.
         Otherwise, leave `random_state` as `None`.
         Pass an int for reproducible output across multiple function calls.
         See :term:`Glossary <random_state>`.
-        
-These parameters are designed to match the structure and functionality of scikit-learn's `StratifiedKFold`. 
 </div>
+These parameters are designed to match the structure and functionality of scikit-learn's `StratifiedKFold`. 
 
 
 
@@ -157,31 +157,24 @@ The methods of the `RebalancedLeavePOut` class are designed to enable identical 
 
 <div class="darkgreen">
 <b>split(X, y, groups=None, seed=None)</b> 
-        <br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-       Generate indices to split data into training and test set.
-
-        Parameters
-        ----------
-        X : array-like of shape (n_samples, n_features)
-            Training data, where `n_samples` is the number of samples
-            and `n_features` is the number of features.
-
-        y : array-like of shape (n_samples,)
-            The target variable for supervised learning problems.
-
-        groups : array-like of shape (n_samples,), default=None
-            Group labels for the samples used while splitting the dataset into
-            train/test set.
-            
-        seed : to enforce consistency in the subsampling
-
-        Yields
-        ------
-        train : ndarray
-            The training set indices for that split.
-
-        test : ndarray
-            The testing set indices for that split.    
+<hr style="height: 2.5px; background-color: white; margin: 1px">
+* Generate indices to split data into training and test set.
+* <hr style="height: 2.5px; background-color: white; margin: 1px">
+  * <u><b>Parameters</b></u>
+    *  <b>X : array-like of shape (n_samples, n_features)</b>
+      * Training data, where `n_samples` is the number of samples and `n_features` is the number of features.
+    * <b>y : array-like of shape (n_samples,)</b>
+      * The target variable for supervised learning problems.
+    * <b>groups : array-like of shape (n_samples,), default=None</b>
+      * Group labels for the samples used while splitting the dataset into train/test set.
+    * <b>seed : int, default=None</b>
+      * If provided, is used to set a seed in subsampling
+  * <hr style="height: 2.5px; background-color: white; margin: 1px">
+  * <u><b>Yields</b></u>
+    * <b>train : ndarray</b>
+      * The training set indices for that split.
+    * <b>test : ndarray</b>
+      * The testing set indices for that split.    
 </div>
 
 
@@ -200,10 +193,10 @@ l{color: darkgreen}
 
 <div class="seealso">
 **See also:**<br>
-[_RebalancedLeaveOneOut_](ebalancedLeaveOneOut.html)<br>
+[__RebalancedLeaveOneOut__](RebalancedLeaveOneOut.html)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 Leave-one-out iterator with training set rebalancing<br>
-[_RebalancedLeavePOut_](RebalancedLeavePOut.html)<br>
+[__RebalancedLeavePOut__](RebalancedLeavePOut.html)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 Leave-P-out iterator with training set rebalancing<br>
 <br>

@@ -7,14 +7,16 @@ output:
 
 <style>
 .darkgreen {
-  background-color:#577836;
+  background-color: #577836;
   color: white;
   border: 2px solid black;
   margin: 20px;
   padding: 20px;
 } 
+  li {
+    list-style-type: none
+  }
 </style>
-
 <style>
     body { 
             background-color: #4D251C;
@@ -25,23 +27,23 @@ output:
             margin: 20px;
             padding: 20px;
             }
-    a:link {
-            color: darkblue; 
+       a:link {
+            color: #577836; 
             background-color: transparent; 
             }
   a:visited {
-            color: darkpurple;
+            color: #577836;
             background-color: transparent;
           }
   a:active {
-        color: darkpurple;
-        background-color: transparent;
-      }
+    color: #577836;
+    background-color: transparent;
+  }
   a:hover {
-        color: darkpurple;
-        background-color: transparent;
-        text-decoration: underline;
-      }
+    color: #577836;
+    background-color: transparent;
+    text-decoration: underline;
+  }
 </style>
 
 <br>
@@ -86,6 +88,14 @@ Note: Similarly to what was previously mentioned in scikit-learn's documentation
 At least 1+p observations per class are needed for `RebalancedLeavePOut`.
 </div>
 
+
+Parameters
+-----------
+
+<div class="darkgreen">
+* <b>p : int</b>
+  * Number of points to be left out in each testing fold
+</div>
 
 Example
 --------
@@ -159,53 +169,42 @@ The methods of the `RebalancedLeavePOut` class are designed to enable identical 
 
 <div class="darkgreen">
 <b>get_n_splits(X, y, groups=None)</b>
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      Returns the number of splitting iterations in the cross-validator.
+<hr style="height: 2.5px; background-color: white; margin: 1px">
+* Returns the number of splitting iterations in the cross-validator.
+* <hr style="height: 2.5px; background-color: white; margin: 1px">
+  * <u><b>Parameters</b></u>
+    * <b>X : array-like of shape (n_samples, n_features)</b>
+      * Training data, where `n_samples` is the number of samples and `n_features` is the number of features.
+    * <b>y : array-like of shape (n_samples, )</b>
+        * The target vector relative to X.
+    * <b>groups : object</b>
+      * Always ignored, exists for compatibility.
+  * <hr style="height: 2.5px; background-color: white; margin: 1px">
+  * <u><b>Returns</b></u>
+    * <b>n_splits : int</b>
+      * Returns the number of splitting iterations in the cross-validator.
+</div>
 
-        Parameters
-        -----------
-        X : array-like of shape (n_samples, n_features)
-            Training data, where `n_samples` is the number of samples
-            and `n_features` is the number of features.
-
-        y : object
-            Needed to maintin class balance consistency.
-
-        groups : object
-            Always ignored, exists for compatibility.
-
-        Returns
-        -------
-        n_splits : int
-            Returns the number of splitting iterations in the cross-validator.
-
-<br><br>    
+<div class="darkgreen">
 <b>split(X, y, groups=None, seed=None)</b> 
-        <br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-       Generate indices to split data into training and test set.
-
-        Parameters
-        ----------
-        X : array-like of shape (n_samples, n_features)
-            Training data, where `n_samples` is the number of samples
-            and `n_features` is the number of features.
-
-        y : array-like of shape (n_samples,)
-            The target variable for supervised learning problems.
-
-        groups : array-like of shape (n_samples,), default=None
-            Group labels for the samples used while splitting the dataset into
-            train/test set.
-            
-        seed : to enforce consistency in the subsampling
-
-        Yields
-        ------
-        train : ndarray
-            The training set indices for that split.
-
-        test : ndarray
-            The testing set indices for that split.    
+<hr style="height: 2.5px; background-color: white; margin: 1px">
+* Generate indices to split data into training and test set.
+* <hr style="height: 2.5px; background-color: white; margin: 1px">
+  * <u><b>Parameters</b></u>
+    * <b>X : array-like of shape (n_samples, n_features)</b>
+      * Training data, where `n_samples` is the number of samples and `n_features` is the number of features.
+    * <b>y : array-like of shape (n_samples,)</b>
+      * The target variable for supervised learning problems.
+    * <b>groups : array-like of shape (n_samples,), default=None</b>
+      * Group labels for the samples used while splitting the dataset into train/test set.
+    * <b>seed : int, default = None</b>
+      * If provided, is used to set a seed in subsampling
+  * <hr style="height: 2.5px; background-color: white; margin: 1px">
+  * <u><b>Yields</b></u>
+    * <b>train : ndarray</b>
+      * The training set indices for that split.
+    * <b>test : ndarray</b>
+      * The testing set indices for that split.    
 </div>
 
 
@@ -224,10 +223,10 @@ l{color: darkgreen}
 
 <div class="seealso">
 **See also:**<br>
-[_RebalancedKFold_](RebalancedKFold.html)<br>
+[__RebalancedKFold__](RebalancedKFold.html)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 Stratified K-fold iterator with training set rebalancing<br>
-[_RebalancedLeaveOneOut_](ebalancedLeaveOneOut.html)<br>
+[__RebalancedLeaveOneOut__](RebalancedLeaveOneOut.html)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 Leave-one-out iterator with training set rebalancing<br>
 <br>

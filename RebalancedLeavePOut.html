@@ -249,14 +249,22 @@ $(document).ready(function () {
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="RebalancedLeaveOneOut.html">RebalancedLeaveOneOut</a>
+  <a href="RebalancedLeaveOneOut.html">
+    <span class="fa fa-bullseye"></span>
+     
+    RebalancedLeaveOneOut
+  </a>
 </li>
 <li>
-  <a href="RebalancedKFold.html">RebalancedKFold</a>
+  <a href="RebalancedKFold.html">
+    <span class="fa fa-object-group"></span>
+     
+    RebalancedKFold
+  </a>
 </li>
 <li>
   <a href="RebalancedLeavePOut.html">
-    <span class="fa fa-object-group"></span>
+    <span class="fa fa-barcode"></span>
      
     RebalancedLeavePOut
   </a>
@@ -304,12 +312,15 @@ $(document).ready(function () {
 
 <style>
 .darkgreen {
-  background-color:#577836;
+  background-color: #577836;
   color: white;
   border: 2px solid black;
   margin: 20px;
   padding: 20px;
 } 
+  li {
+    list-style-type: none
+  }
 </style>
 <style>
     body { 
@@ -321,23 +332,23 @@ $(document).ready(function () {
             margin: 20px;
             padding: 20px;
             }
-    a:link {
-            color: darkblue; 
+       a:link {
+            color: #577836; 
             background-color: transparent; 
             }
   a:visited {
-            color: darkpurple;
+            color: #577836;
             background-color: transparent;
           }
   a:active {
-        color: darkpurple;
-        background-color: transparent;
-      }
+    color: #577836;
+    background-color: transparent;
+  }
   a:hover {
-        color: darkpurple;
-        background-color: transparent;
-        text-decoration: underline;
-      }
+    color: #577836;
+    background-color: transparent;
+    text-decoration: underline;
+  }
 </style>
 <br>
 <center>
@@ -383,6 +394,17 @@ combinatorically with the number of samples this cross-validation method
 can be very costly.</p>
 <p>At least 1+p observations per class are needed for
 <code>RebalancedLeavePOut</code>.</p>
+</div>
+</div>
+<div id="parameters" class="section level2">
+<h2>Parameters</h2>
+<div class="darkgreen">
+<ul>
+<li><b>p : int</b>
+<ul>
+<li>Number of points to be left out in each testing fold</li>
+</ul></li>
+</ul>
 </div>
 </div>
 <div id="example" class="section level2">
@@ -451,50 +473,84 @@ Fold 14:
 designed to enable identical funcitonality to scikit-learn’s <a
 href="https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.LeavePOut.html"><code>LeavePOut</code></a>.</p>
 <div class="darkgreen">
-<p><b>get_n_splits(X, y, groups=None)</b> <br>       Returns the number
-of splitting iterations in the cross-validator.</p>
-<pre><code>    Parameters
-    -----------
-    X : array-like of shape (n_samples, n_features)
-        Training data, where `n_samples` is the number of samples
-        and `n_features` is the number of features.
+<b>get_n_splits(X, y, groups=None)</b>
+<hr style="height: 2.5px; background-color: white; margin: 1px">
+<ul>
+<li>Returns the number of splitting iterations in the
+cross-validator.</li>
+<li><hr style="height: 2.5px; background-color: white; margin: 1px">
+<ul>
+<li><u><b>Parameters</b></u>
+<ul>
+<li><b>X : array-like of shape (n_samples, n_features)</b>
+<ul>
+<li>Training data, where <code>n_samples</code> is the number of samples
+and <code>n_features</code> is the number of features.</li>
+</ul></li>
+<li><b>y : array-like of shape (n_samples, )</b>
+<ul>
+<li>The target vector relative to X.</li>
+</ul></li>
+<li><b>groups : object</b>
+<ul>
+<li>Always ignored, exists for compatibility.</li>
+</ul></li>
+</ul></li>
+<li><hr style="height: 2.5px; background-color: white; margin: 1px"></li>
+<li><u><b>Returns</b></u>
+<ul>
+<li><b>n_splits : int</b>
+<ul>
+<li>Returns the number of splitting iterations in the cross-validator.
+</div></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+<div class="darkgreen">
+<b>split(X, y, groups=None, seed=None)</b>
+<hr style="height: 2.5px; background-color: white; margin: 1px">
+<ul>
+<li>Generate indices to split data into training and test set.</li>
+<li><hr style="height: 2.5px; background-color: white; margin: 1px">
+<ul>
+<li><u><b>Parameters</b></u>
+<ul>
+<li><b>X : array-like of shape (n_samples, n_features)</b>
+<ul>
+<li>Training data, where <code>n_samples</code> is the number of samples
+and <code>n_features</code> is the number of features.</li>
+</ul></li>
+<li><b>y : array-like of shape (n_samples,)</b>
+<ul>
+<li>The target variable for supervised learning problems.</li>
+</ul></li>
+<li><b>groups : array-like of shape (n_samples,), default=None</b>
+<ul>
+<li>Group labels for the samples used while splitting the dataset into
+train/test set.</li>
+</ul></li>
+<li><b>seed : int, default = None</b>
+<ul>
+<li>If provided, is used to set a seed in subsampling</li>
+</ul></li>
+</ul></li>
+<li><hr style="height: 2.5px; background-color: white; margin: 1px"></li>
+<li><u><b>Yields</b></u>
+<ul>
+<li><b>train : ndarray</b>
+<ul>
+<li>The training set indices for that split.</li>
+</ul></li>
+<li><b>test : ndarray</b>
+<ul>
+<li>The testing set indices for that split.<br />
 
-    y : object
-        Needed to maintin class balance consistency.
-
-    groups : object
-        Always ignored, exists for compatibility.
-
-    Returns
-    -------
-    n_splits : int
-        Returns the number of splitting iterations in the cross-validator.</code></pre>
-<p><br><br><br />
-<b>split(X, y, groups=None, seed=None)</b> <br>        Generate indices
-to split data into training and test set.</p>
-<pre><code>    Parameters
-    ----------
-    X : array-like of shape (n_samples, n_features)
-        Training data, where `n_samples` is the number of samples
-        and `n_features` is the number of features.
-
-    y : array-like of shape (n_samples,)
-        The target variable for supervised learning problems.
-
-    groups : array-like of shape (n_samples,), default=None
-        Group labels for the samples used while splitting the dataset into
-        train/test set.
-        
-    seed : to enforce consistency in the subsampling
-
-    Yields
-    ------
-    train : ndarray
-        The training set indices for that split.
-
-    test : ndarray
-        The testing set indices for that split.    </code></pre>
-</div>
+</div></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
 <style>
 .seealso {
   background-color: #F6B302;
@@ -508,9 +564,9 @@ l{color: darkgreen}
 </style>
 <div class="seealso">
 <strong>See also:</strong><br> <a
-href="RebalancedKFold.html"><em>RebalancedKFold</em></a><br>       
-Stratified K-fold iterator with training set rebalancing<br> <a
-href="ebalancedLeaveOneOut.html"><em>RebalancedLeaveOneOut</em></a><br>
+href="RebalancedKFold.html"><strong>RebalancedKFold</strong></a><br>
+       Stratified K-fold iterator with training set rebalancing<br> <a
+href="RebalancedLeaveOneOut.html"><strong>RebalancedLeaveOneOut</strong></a><br>
        Leave-one-out iterator with training set rebalancing<br> <br> For
 more background on LeavePOut, refer to the scikit-learn <a
 href="https://scikit-learn.org/stable/modules/cross_validation.html#leave-p-out">User

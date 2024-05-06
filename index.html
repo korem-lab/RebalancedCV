@@ -249,14 +249,22 @@ $(document).ready(function () {
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="RebalancedLeaveOneOut.html">RebalancedLeaveOneOut</a>
+  <a href="RebalancedLeaveOneOut.html">
+    <span class="fa fa-bullseye"></span>
+     
+    RebalancedLeaveOneOut
+  </a>
 </li>
 <li>
-  <a href="RebalancedKFold.html">RebalancedKFold</a>
+  <a href="RebalancedKFold.html">
+    <span class="fa fa-object-group"></span>
+     
+    RebalancedKFold
+  </a>
 </li>
 <li>
   <a href="RebalancedLeavePOut.html">
-    <span class="fa fa-object-group"></span>
+    <span class="fa fa-barcode"></span>
      
     RebalancedLeavePOut
   </a>
@@ -345,23 +353,31 @@ distributional bias during cross-validation</h1>
 <img src='images/RLOOCV-logo.png' align="right" height="300" />
 <link rel="icon" type="image/png" href="images/RLOOCV-logo.png" />
 </center>
+<style type="text/css">
+.bashform {
+  background-color: #577836;
+  border: 3px solid black;
+  font-weight: bold;
+  color: whitesmoke; 
+}
+</style>
 <hr />
 <script>
-  addClassKlippyTo("pre.r, pre.python, pre.bash");
+  addClassKlippyTo("pre.r, pre.python, pre.bash, pre.bashform");
   addKlippy('right', 'top', '#A52A2A', '1', 'Copy', 'Copied!');
 </script>
 <div class="body">
-<p><br></p>
-<p>Welcome to <a href="index.html"><em>RebalancedCV</em></a>! This is a
-python package designed to facilitate correcting for distributional bias
-during cross validation.</p>
-<p><br>  </p>
+<p>Welcome to <a href="index.html"><strong>RebalancedCV</strong></a>!
+This is a python package designed to facilitate correcting for
+distributional bias during cross validation.<br />
+<br></p>
 </div>
-<p>RebalancedCV conatins the following three classes: <a
-href="RebalancedLeaveOneOut.html"><em>RebalancedLeaveOneOut</em></a>, <a
-href="RebalancedKFold.html"><em>RebalancedKFold</em></a>, and <a
-href="RebalancedLeavePOut.html"><em>RebalancedLeavePOut</em></a>. These
-are implementations for <code>Leave One Out</code>,
+<p>RebalancedCV contains the following three classes: <a
+href="RebalancedLeaveOneOut.html"><strong>RebalancedLeaveOneOut</strong></a>,
+<a href="RebalancedKFold.html"><strong>RebalancedKFold</strong></a>, and
+<a
+href="RebalancedLeavePOut.html"><strong>RebalancedLeavePOut</strong></a>.
+These are implementations for <code>Leave One Out</code>,
 <code>Stratified K-Fold</code>, and <code>Leave P Out</code>
 cross-validation with sub-sampling within training sets to ensure that,
 for any cross-validation scheme, the class balances across all training
@@ -369,40 +385,17 @@ folds are identical.</p>
 <p><br></p>
 <div id="installation" class="section level2">
 <h2>Installation</h2>
-<div class="darkgreen">
-<pre class="bash"><code>pip install git+https://github.com/korem-lab/RebalancedCV.git</code></pre>
-</div>
+<pre class="bashform"><code>pip install git+https://github.com/korem-lab/RebalancedCV.git</code></pre>
 <p>The only dependencies for installation are <code>python</code> and
 <code>scikit-learn</code> <br><br></p>
 </div>
-<div id="example" class="section level2">
-<h2>Example</h2>
-<pre class="python"><code>import numpy as np
-from rebalancedcv import RebalancedLeaveOneOut
-
-X = np.array([[1, 2, 1, 2], [3, 4, 3, 4]]).T
-y = np.array([1, 2, 1, 2])
-rloo = RebalancedLeaveOneOut()
-for i, (train_index, test_index) in enumerate(rloo.split(X, y)):
-    print(f&quot;Fold {i}:&quot;)
-    print(f&quot;  Train: index={train_index}&quot;)
-    print(f&quot;  Test:  index={test_index}&quot;)</code></pre>
-<pre><code>Fold 0:
-  Train: index=[2 3]
-  Test:  index=[0]
-Fold 1:
-  Train: index=[0 3]
-  Test:  index=[1]
-Fold 2:
-  Train: index=[0 1]
-  Test:  index=[2]
-Fold 3:
-  Train: index=[0 1]
-  Test:  index=[3]</code></pre>
+<div id="loading" class="section level2">
+<h2>Loading</h2>
+<pre class="python"><code>from rebalancedcv import RebalancedLeaveOneOut, RebalancedKFold, RebalancedLeavePOut</code></pre>
 <p><br></p>
 </div>
-<div id="background" class="section level2">
-<h2>Background</h2>
+<div id="background-analysis" class="section level2">
+<h2>Background &amp; Analysis</h2>
 <p>It was recently shown that removing a fraction of a dataset into a
 testing fold can artificially create a shift in label averages across
 training folds that is inversely correlated with that of their

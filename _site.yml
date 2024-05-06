@@ -3,15 +3,16 @@ output_dir: '.'
 favicon: images/RLOOCV-logo.png
 navbar:
   title: RebalancedCV
-  icon: fa-book
   left:
   - text: RebalancedLeaveOneOut
     href: RebalancedLeaveOneOut.html
+    icon: fa-bullseye
   - text: RebalancedKFold
     href: RebalancedKFold.html
+    icon: fa-object-group
   - text: RebalancedLeavePOut
     href: RebalancedLeavePOut.html
-    icon: fa-object-group
+    icon: fa-barcode
   - text: Related documents
     icon: fa-binoculars
     menu:

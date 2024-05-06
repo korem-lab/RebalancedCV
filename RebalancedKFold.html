@@ -249,14 +249,22 @@ $(document).ready(function () {
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="RebalancedLeaveOneOut.html">RebalancedLeaveOneOut</a>
+  <a href="RebalancedLeaveOneOut.html">
+    <span class="fa fa-bullseye"></span>
+     
+    RebalancedLeaveOneOut
+  </a>
 </li>
 <li>
-  <a href="RebalancedKFold.html">RebalancedKFold</a>
+  <a href="RebalancedKFold.html">
+    <span class="fa fa-object-group"></span>
+     
+    RebalancedKFold
+  </a>
 </li>
 <li>
   <a href="RebalancedLeavePOut.html">
-    <span class="fa fa-object-group"></span>
+    <span class="fa fa-barcode"></span>
      
     RebalancedLeavePOut
   </a>
@@ -304,12 +312,15 @@ $(document).ready(function () {
 
 <style>
 .darkgreen {
-  background-color:#577836;
+  background-color: #577836;
   color: white;
   border: 2px solid black;
   margin: 20px;
   padding: 20px;
 } 
+  li {
+    list-style-type: none
+  }
 </style>
 <style>
     body { 
@@ -321,23 +332,23 @@ $(document).ready(function () {
             margin: 20px;
             padding: 20px;
             }
-    a:link {
-            color: darkblue; 
+   a:link {
+            color: #577836; 
             background-color: transparent; 
             }
   a:visited {
-            color: darkpurple;
+            color: #577836;
             background-color: transparent;
           }
   a:active {
-        color: darkpurple;
-        background-color: transparent;
-      }
+    color: #577836;
+    background-color: transparent;
+  }
   a:hover {
-        color: darkpurple;
-        background-color: transparent;
-        text-decoration: underline;
-      }
+    color: #577836;
+    background-color: transparent;
+    text-decoration: underline;
+  }
 </style>
 <style>
 .darkblue {
@@ -389,23 +400,33 @@ implementation structure as scikit-learn’s
 <div id="parameters" class="section level2">
 <h2>Parameters</h2>
 <div class="darkgreen">
-<pre><code>n_splits : int, default=5
-    Number of folds. Must be at least 2.
-
-shuffle : bool, default=False
-    Whether to shuffle each class&#39;s samples before splitting into batches.
-    Note that the samples within each split will not be shuffled.
-
-random_state : int, RandomState instance or None, default=None
-    When `shuffle` is True, `random_state` affects the ordering of the
-    indices, which controls the randomness of each fold for each class.
-    Otherwise, leave `random_state` as `None`.
-    Pass an int for reproducible output across multiple function calls.
-    See :term:`Glossary &lt;random_state&gt;`.
-    </code></pre>
+<ul>
+<li><b>n_splits : int, default=5</b>
+<ul>
+<li>Number of folds. Must be at least 2.</li>
+</ul></li>
+<li><hr style="height: 2.5px; background-color: white; margin: 1px"></li>
+<li><b>shuffle : bool, default=False</b>
+<ul>
+<li>Whether to shuffle each class’s samples before splitting into
+batches. Note that the samples within each split will not be
+shuffled.</li>
+</ul></li>
+<li><hr style="height: 2.5px; background-color: white; margin: 1px"></li>
+<li><b>random_state : int, RandomState instance or None,
+default=None</b>
+<ul>
+<li>When <code>shuffle</code> is True, <code>random_state</code> affects
+the ordering of the indices, which controls the randomness of each fold
+for each class. Otherwise, leave <code>random_state</code> as
+<code>None</code>. Pass an int for reproducible output across multiple
+function calls. See
+:term:<code>Glossary &lt;random_state&gt;</code>.</li>
+</ul></li>
+</ul>
+</div>
 <p>These parameters are designed to match the structure and
 functionality of scikit-learn’s <code>StratifiedKFold</code>.</p>
-</div>
 </div>
 <div id="example" class="section level2">
 <h2>Example</h2>
@@ -435,31 +456,47 @@ Fold 1:
 designed to enable identical funcitonality to scikit-learn’s <a
 href="https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.LeavePOut.html"><code>LeavePOut</code></a>.</p>
 <div class="darkgreen">
-<p><b>split(X, y, groups=None, seed=None)</b> <br>        Generate
-indices to split data into training and test set.</p>
-<pre><code>    Parameters
-    ----------
-    X : array-like of shape (n_samples, n_features)
-        Training data, where `n_samples` is the number of samples
-        and `n_features` is the number of features.
+<b>split(X, y, groups=None, seed=None)</b>
+<hr style="height: 2.5px; background-color: white; margin: 1px">
+<ul>
+<li>Generate indices to split data into training and test set.</li>
+<li><hr style="height: 2.5px; background-color: white; margin: 1px">
+<ul>
+<li><u><b>Parameters</b></u>
+<ul>
+<li><b>X : array-like of shape (n_samples, n_features)</b></li>
+<li>Training data, where <code>n_samples</code> is the number of samples
+and <code>n_features</code> is the number of features.</li>
+<li><b>y : array-like of shape (n_samples,)</b>
+<ul>
+<li>The target variable for supervised learning problems.</li>
+</ul></li>
+<li><b>groups : array-like of shape (n_samples,), default=None</b>
+<ul>
+<li>Group labels for the samples used while splitting the dataset into
+train/test set.</li>
+</ul></li>
+<li><b>seed : int, default=None</b>
+<ul>
+<li>If provided, is used to set a seed in subsampling</li>
+</ul></li>
+</ul></li>
+<li><hr style="height: 2.5px; background-color: white; margin: 1px"></li>
+<li><u><b>Yields</b></u>
+<ul>
+<li><b>train : ndarray</b>
+<ul>
+<li>The training set indices for that split.</li>
+</ul></li>
+<li><b>test : ndarray</b>
+<ul>
+<li>The testing set indices for that split.<br />
 
-    y : array-like of shape (n_samples,)
-        The target variable for supervised learning problems.
-
-    groups : array-like of shape (n_samples,), default=None
-        Group labels for the samples used while splitting the dataset into
-        train/test set.
-        
-    seed : to enforce consistency in the subsampling
-
-    Yields
-    ------
-    train : ndarray
-        The training set indices for that split.
-
-    test : ndarray
-        The testing set indices for that split.    </code></pre>
-</div>
+</div></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
 <style>
 .seealso {
   background-color: #F6B302;
@@ -473,9 +510,9 @@ l{color: darkgreen}
 </style>
 <div class="seealso">
 <strong>See also:</strong><br> <a
-href="ebalancedLeaveOneOut.html"><em>RebalancedLeaveOneOut</em></a><br>
+href="RebalancedLeaveOneOut.html"><strong>RebalancedLeaveOneOut</strong></a><br>
        Leave-one-out iterator with training set rebalancing<br> <a
-href="RebalancedLeavePOut.html"><em>RebalancedLeavePOut</em></a><br>
+href="RebalancedLeavePOut.html"><strong>RebalancedLeavePOut</strong></a><br>
        Leave-P-out iterator with training set rebalancing<br> <br> For
 more background on Stratified K-Fold, refer to the scikit-learn <a
 href="https://scikit-learn.org/stable/modules/cross_validation.html#k-fold">User
