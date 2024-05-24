@@ -2,7 +2,7 @@
 =============
 <img src='vignettes/RLOOCV-logo.png' align="right" height="250" />
 
-This is a python package designed to facilitate correcting for distributional bias during cross valiation.  It was recently shown that removing a fraction of a dataset into a testing fold can artificially create a shift in label averages across training folds that is inversely correlated with that of their corresponding test folds. We have demonstrated that most machine learning models' results suffer from this bias (see the `Example` section below for a demonstration). To address the issue, this package autmatically subsamples points from within the trianing set to remove any differences in label average across training folds, which has been demonstrated to improve performance and tuning of machine learning moddels.
+This is a python package designed to facilitate correcting for distributional bias during cross valiation.  It was recently shown that removing a fraction of a dataset into a testing fold can artificially create a shift in label averages across training folds that is inversely correlated with that of their corresponding test folds. We have demonstrated that most machine learning models' results suffer from this bias, which this package resolves by subsampling points from within the trianing set to remove any differences in label average across training folds. to begin using RebalancedCV, we recommend reading it's [documentation pages](https://korem-lab.github.io/RebalancedCV/).
 
 
 All classes from this package provide train/test indices to split data in train/test sets while rebalancing the training set to account for distributional bias. This package is designed to enable automated rebalancing for the cross-valition implementations in scikit-learn's `LeaveOneOut`, `StratifiedKFold`, and `LeavePOut`, through the `RebalancedCV` classes `RebalancedLeaveOneOut`, `RebalancedKFold`, and `RebalancedLeavePOut`. These Rebalanced classes are designed to work in the exact same code structure and implementation use cases as their scikit-learn equivalents, with the only difference being a subsampling within the provided training indices.
@@ -13,10 +13,12 @@ All classes from this package provide train/test indices to split data in train/
 ```bash
 pip install git+https://github.com/korem-lab/RebalancedCV.git
 ```
+The dependencies for RebalancedCV are python, numpy, and scikit-learn. Is has been developped and tested using python 3.6 - 3.9. Only standard hardware is required for RebalancedCV. The typical install time for RebalancedCV is less that 15 seconds. 
+
 
 **Example**
 -----------------
-We demonstrate the following snippet of code to utilize out rebalanced leave-one-out implementation, using an observation matrix `X` and a binary outcome vector `y`. We demonstrate it using scikit-learn's `LogisticRegressionCV`, although this can be replaced with any training/tuning/predicting scheme. 
+We demonstrate the following snippet of code to utilize out rebalanced leave-one-out implementation, using an observation matrix `X` and a binary outcome vector `y`. We demonstrate it using scikit-learn's `LogisticRegressionCV`, although this can be replaced with any training/tuning/predicting scheme. The expected runtime for the RebalancedCV package's operations are less than 5 seconds, wihle the overall example is expected to complete in less than one minute on most machines.
 
 ```python
 import numpy as np 

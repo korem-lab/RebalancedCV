@@ -18,7 +18,7 @@ def flatten(xss):
     return [x for xs in xss for x in xs]
 
 class RebalancedLeaveOneOut(BaseCrossValidator):
-    """Rebalanced Leave-One-Out cross-validator, as described in `Austin et al.`
+    """Rebalanced Leave-One-Out cross-validator
 
     Provides train/test indices to split data in train/test sets. Each
     sample is used once as a test set (singleton) while the remaining
@@ -33,24 +33,26 @@ class RebalancedLeaveOneOut(BaseCrossValidator):
     Examples
     --------
     >>> import numpy as np
-    >>> from sklearn.model_selection import LeaveOneOut
-    >>> X = np.array([[1, 2], [3, 4], [1, 2], [3, 4]])
-    >>> y = np.array([0, 1, 1, 0])
+    >>> from rebalancedcv import RebalancedLeaveOneOut
+    >>> X = np.array([[1, 2, 1, 2], [3, 4, 3, 4]]).T
+    >>> y = np.array([1, 2, 1, 2])
     >>> rloo = RebalancedLeaveOneOut()
-    >>> rloo.get_n_splits(X)
-    2
-    >>> print(rloo)
-    RebalancedLeaveOneOut()
-    >>> for i, (train_index, test_index) in enumerate(rloo.split(X)):
+    >>> for i, (train_index, test_index) in enumerate(rloo.split(X, y)):
     ...     print(f"Fold {i}:")
     ...     print(f"  Train: index={train_index}")
     ...     print(f"  Test:  index={test_index}")
-    Fold 0:
-      Train: index=[1, 2]
-      Test:  index=[0]
-    Fold 1:
-      Train: index=[1, 4]
-      Test:  index=[1]
+        Fold 0:
+          Train: index=[2 3]
+          Test:  index=[0]
+        Fold 1:
+          Train: index=[0 3]
+          Test:  index=[1]
+        Fold 2:
+          Train: index=[0 1]
+          Test:  index=[2]
+        Fold 3:
+          Train: index=[0 1]
+          Test:  index=[3]
     """
     
     def split(self, X, y, groups=None, seed=None):
@@ -246,9 +248,6 @@ class RebalancedKFold(_RebalanacedBaseKFold):
     n_splits : int, default=5
         Number of folds. Must be at least 2.
 
-        .. versionchanged:: 0.22
-            ``n_splits`` default value changed from 3 to 5.
-
     shuffle : bool, default=False
         Whether to shuffle each class's samples before splitting into batches.
         Note that the samples within each split will not be shuffled.
@@ -264,19 +263,22 @@ class RebalancedKFold(_RebalanacedBaseKFold):
     --------
     >>> import numpy as np
     >>> from sklearn.model_selection import RebalancedKFold
-    >>> X = np.array([[1, 2], [3, 4], [1, 2], [3, 4]])
-    >>> y = np.array([0, 0, 1, 1])
+    >>> X = np.array([[1, 2, 1, 2, 1], [3, 4, 3, 4, 3]]).T
+    >>> y = np.array([1, 2, 1, 2, 1])
     >>> rkf = RebalancedKFold(n_splits=2)
     >>> rkf.get_n_splits(X, y)
     2
     >>> print(rkf)
-    RebalancedKFold(n_splits=2, random_state=None, shuffle=False)
-    >>> for train_index, test_index in rkf.split(X, y):
-    ...     print("TRAIN:", train_index, "TEST:", test_index)
-    ...     X_train, X_test = X[train_index], X[test_index]
-    ...     y_train, y_test = y[train_index], y[test_index]
-    TRAIN: [1 3] TEST: [0 2]
-    TRAIN: [0 2] TEST: [1 3]
+    >>> for i, (train_index, test_index) in enumerate(rloo.split(X, y)):
+    >>>     print(f"Fold {i}:")
+    >>>     print(f"  Train: index={train_index}")
+    >>>     print(f"  Test:  index={test_index}")
+    Fold 0:
+      Train: index=[3 4]
+      Test:  index=[0 1 2]
+    Fold 1:
+      Train: index=[0 1]
+      Test:  index=[3 4]
 
     Notes
     -----
@@ -410,23 +412,15 @@ class RebalancedKFold(_RebalanacedBaseKFold):
 
     
 class RebalancedLeavePOut(BaseCrossValidator):
-    """Leave-P-Out cross-validator.
+    """Rebalanced Leave-P-Out cross-validator.
 
-    Provides train/test indices to split data in train/test sets. This results
-    in testing on all distinct samples of size p, while a remaining n - 2p
-    samples form the training set in each iteration. The additional `p` training 
-    samples are removed to ensure that no distributional bias occurs across folds
-    
-    This class is designed to have the same functionality and 
-    implementation structure as scikit-learn's ``LeavePOut()``
-    
-    Note: ``RebalancedLeavePOut(p)`` is NOT equivalent to
-    ``RebalancedKFold(n_splits=n_samples // p)`` which creates non-overlapping test sets.
+    Provides train/test indices to split data in train/test sets with subsampling within the training set to ensure that all training folds have identical class balances. This cross-validation tests on all distinct samples of size p, while a remaining n - 2p samples form the training set in each iteration, with an additional p samples used to subsamples from within the training set.
 
-    Due to the high number of iterations which grows combinatorically with the
-    number of samples this cross-validation method can be very costly. For
-    large datasets one should favor :class:`RebalancedKFold` or `RebalancedLeaveOneOut`
-    
+    This class is designed to have the same functionality and implementation structure as scikit-learn’s LeavePOut()
+
+    Note: Similarly to what was previously mentioned in scikit-learn’s documentation, RebalancedLeavePOut(p) is NOT equivalent to RebalancedKFold(n_splits=n_samples // p) which creates non-overlapping test sets. Due to the high number of iterations which grows combinatorically with the number of samples this cross-validation method can be very costly.
+
+    At least 1+p observations per class are needed for RebalancedLeavePOut.
 
     Parameters
     ----------
@@ -438,35 +432,26 @@ class RebalancedLeavePOut(BaseCrossValidator):
     --------
     >>> import numpy as np
     >>> from RebalanvedCV import RebalancedLeavePOut
-    >>> X = np.array([[1, 2], [3, 4], [5, 6], [7, 8]])
-    >>> y = np.array([1, 2, 3, 4]) 
+    >>> X = np.array([[1, 2, 1, 2, 1, 2], [3, 4, 3, 4, 3, 4]]).T
+    >>> y = np.array([0,1,0,1,0,1])
     >>> rlpo = RebalancedLeavePOut(2)
-    >>> rlpo.get_n_splits(X)
-    6
-    >>> print(lpo)
-    RebalancedLeavePOut(p=2)
     >>> for i, (train_index, test_index) in enumerate(rlpo.split(X)):
     ...     print(f"Fold {i}:")
     ...     print(f"  Train: index={train_index}")
     ...     print(f"  Test:  index={test_index}")
     Fold 0:
-      Train: index=[2 3]
+      Train: index=[4 5]
       Test:  index=[0 1]
     Fold 1:
-      Train: index=[1 3]
+      Train: index=[1 4]
       Test:  index=[0 2]
     Fold 2:
-      Train: index=[1 2]
+      Train: index=[4 5]
       Test:  index=[0 3]
     Fold 3:
-      Train: index=[0 3]
-      Test:  index=[1 2]
-    Fold 4:
-      Train: index=[0 2]
-      Test:  index=[1 3]
-    Fold 5:
-      Train: index=[0 1]
-      Test:  index=[2 3]
+      Train: index=[2 3]
+      Test:  index=[0 4]
+    ...
     """
 
     def __init__(self, p):
