@@ -64,7 +64,7 @@ print('Rebalanceed Leave-one-out auROC: {:.2f}'\
     Rebalanceed Leave-one-out auROC: 0.48
 
 
-As demontrated in this example, neglecting to account for distributional bias in the cross-valiation classes can greatly decrease evaluated model performance. For more details on why this happens, please refer to **Austin et al. in prep** .
+As demontrated in this example, neglecting to account for distributional bias in the cross-valiation classes can greatly decrease evaluated model performance. For more details on why this happens, please refer to Austin, G.I. et al. “Distributional bias compromises leave-one-out cross-validation” (2024). https://arxiv.org/abs/2406.01652. 
 
 
 We note that the example's code structure appraoch would apply to this package's other `RebalancedKFold` and `RebalancedLeavePOut` classes.
@@ -135,4 +135,4 @@ All three of this package's classes use the `split` method, which all use the fo
 
 **Citation**
 -------
-Austin, G.I. et al. "Correcting for distributional bias during leave-P-out cross-validation improves machine learning performance evaluation" (2024). **fill in link**
+Austin, G.I. et al. “Distributional bias compromises leave-one-out cross-validation” (2024). https://arxiv.org/abs/2406.01652
