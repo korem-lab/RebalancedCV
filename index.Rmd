@@ -139,13 +139,13 @@ print('Rebalanceed Leave-one-out auROC: {:.2f}'\
     Rebalanceed Leave-one-out auROC: 0.48
 
 
-As demonstrated in this example, neglecting to account for distributional bias in the cross-validation classes can greatly decrease evaluated model performance. For more details on why this happens, please refer to [our manuscript](google.com).
+As demonstrated in this example, neglecting to account for distributional bias in the cross-validation classes can greatly decrease evaluated model performance. For more details on why this happens, please refer to [our manuscript](https://arxiv.org/abs/2406.01652).
 
-We note that the example's code structure appraoch would apply to this package's other `RebalancedKFold` and `RebalancedLeavePOut` classes.
+We note that the example's code structure approach would apply to this package's other `RebalancedKFold` and `RebalancedLeavePOut` classes.
 
 
 
-All classes from this package provide train/test indices to split data in train/test sets while rebalancing the training set to account for distributional bias. This package is designed to enable automated rebalancing for the cross-valition implementations in scikit-learn's `LeaveOneOut`, `StratifiedKFold`, and `LeavePOut`, through the `RebalancedCV` classes `RebalancedLeaveOneOut`, `RebalancedKFold`, and `RebalancedLeavePOut`. These Rebalanced classes are designed to work in the exact same code structure and implementation use cases as their scikit-learn equivalents, with the only difference being a subsampling within the provided training indices. 
+All classes from this package provide train/test indices to split data in train/test sets while rebalancing the training set to account for distributional bias. This package is designed to enable automated rebalancing for the cross-validation implementations in scikit-learn's `LeaveOneOut`, `StratifiedKFold`, and `LeavePOut`, through the `RebalancedCV` classes `RebalancedLeaveOneOut`, `RebalancedKFold`, and `RebalancedLeavePOut`. These Rebalanced classes are designed to work in the exact same code structure and implementation use cases as their scikit-learn equivalents, with the only difference being a subsampling within the provided training indices. 
 
 For more details, we provide further background and walkthroughs for each of these three classes in their respective documentation tabs.
 
@@ -155,6 +155,7 @@ Please report any issues faced while using RebalancedCV in our [Issues Page](htt
 
 <br>
 
+
 ## Citation
 <style>
 .citation {
@@ -163,10 +164,10 @@ Please report any issues faced while using RebalancedCV in our [Issues Page](htt
   border: 2px solid black;
   margin: 20px;
   padding: 20px;
+  }
 } 
 </style>
 
 <div class="citation">
-Austin, G.I. et al. "Correcting for distributional bias during leave-P-out cross-validation improves machine learning performance evaluation" (2024). fill in link
+Austin, G.I. et al. "Distributional bias compromises leave-one-out cross-validation" (2024). https://arxiv.org/abs/2406.01652
 </div>
-

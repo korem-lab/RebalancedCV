@@ -13,13 +13,13 @@
 
 <title>RebalancedCV: Solving distributional bias during cross-validation</title>
 
-<script src="index_files/header-attrs-2.20/header-attrs.js"></script>
-<script src="index_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="site_libs/header-attrs-2.23/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="index_files/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
-<script src="index_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
-<script src="index_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
-<script src="index_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<link href="site_libs/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
 <style>h1 {font-size: 34px;}
        h1.title {font-size: 38px;}
        h2 {font-size: 30px;}
@@ -29,15 +29,15 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
-<script src="index_files/navigation-1.1/tabsets.js"></script>
-<link href="index_files/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
-<script src="index_files/highlightjs-9.12.0/highlight.js"></script>
-<script src="index_files/clipboard-1.7.1/clipboard.min.js"></script>
-<link href="index_files/primer-tooltips-1.4.0/build.css" rel="stylesheet" />
-<link href="index_files/klippy-0.0.0.9500/css/klippy.min.css" rel="stylesheet" />
-<script src="index_files/klippy-0.0.0.9500/js/klippy.min.js"></script>
-<link href="index_files/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
-<link href="index_files/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/clipboard-1.7.1/clipboard.min.js"></script>
+<link href="site_libs/primer-tooltips-1.4.0/build.css" rel="stylesheet" />
+<link href="site_libs/klippy-0.0.0.9500/css/klippy.min.css" rel="stylesheet" />
+<script src="site_libs/klippy-0.0.0.9500/js/klippy.min.js"></script>
+<link href="site_libs/font-awesome-6.4.0/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.0/css/v4-shims.min.css" rel="stylesheet" />
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -279,7 +279,7 @@ $(document).ready(function () {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="www.google.com">RebalancedCV Manuscript</a>
+      <a href="https://arxiv.org/abs/2406.01652">RebalancedCV Manuscript</a>
     </li>
   </ul>
 </li>
@@ -306,8 +306,7 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore"><strong>RebalancedCV</strong>: Solving
-distributional bias during cross-validation</h1>
+<h1 class="title toc-ignore"><strong>RebalancedCV</strong>: Solving distributional bias during cross-validation</h1>
 
 </div>
 
@@ -350,8 +349,7 @@ distributional bias during cross-validation</h1>
   }
 
 </style>
-<img src='images/RLOOCV-logo.png' align="right" height="300" />
-<link rel="icon" type="image/png" href="images/RLOOCV-logo.png" />
+<img src='images/RLOOCV-logo.png' align="right" height="300" /> <link rel="icon" type="image/png" href="images/RLOOCV-logo.png" />
 </center>
 <style type="text/css">
 .bashform {
@@ -367,27 +365,15 @@ distributional bias during cross-validation</h1>
   addKlippy('right', 'top', '#A52A2A', '1', 'Copy', 'Copied!');
 </script>
 <div class="body">
-<p>Welcome to <a href="index.html"><strong>RebalancedCV</strong></a>!
-This is a python package designed to facilitate correcting for
-distributional bias during cross validation.<br />
+<p>Welcome to <a href="index.html"><strong>RebalancedCV</strong></a>! This is a python package designed to facilitate correcting for distributional bias during cross validation.<br />
 <br></p>
 </div>
-<p>RebalancedCV contains the following three classes: <a
-href="RebalancedLeaveOneOut.html"><strong>RebalancedLeaveOneOut</strong></a>,
-<a href="RebalancedKFold.html"><strong>RebalancedKFold</strong></a>, and
-<a
-href="RebalancedLeavePOut.html"><strong>RebalancedLeavePOut</strong></a>.
-These are implementations for <code>Leave One Out</code>,
-<code>Stratified K-Fold</code>, and <code>Leave P Out</code>
-cross-validation with sub-sampling within training sets to ensure that,
-for any cross-validation scheme, the class balances across all training
-folds are identical.</p>
+<p>RebalancedCV contains the following three classes: <a href="RebalancedLeaveOneOut.html"><strong>RebalancedLeaveOneOut</strong></a>, <a href="RebalancedKFold.html"><strong>RebalancedKFold</strong></a>, and <a href="RebalancedLeavePOut.html"><strong>RebalancedLeavePOut</strong></a>. These are implementations for <code>Leave One Out</code>, <code>Stratified K-Fold</code>, and <code>Leave P Out</code> cross-validation with sub-sampling within training sets to ensure that, for any cross-validation scheme, the class balances across all training folds are identical.</p>
 <p><br></p>
 <div id="installation" class="section level2">
 <h2>Installation</h2>
 <pre class="bashform"><code>pip install git+https://github.com/korem-lab/RebalancedCV.git</code></pre>
-<p>The only dependencies for installation are <code>python</code> and
-<code>scikit-learn</code> <br><br></p>
+<p>The only dependencies for installation are <code>python</code> and <code>scikit-learn</code> <br><br></p>
 </div>
 <div id="loading" class="section level2">
 <h2>Loading</h2>
@@ -396,20 +382,8 @@ folds are identical.</p>
 </div>
 <div id="background-analysis" class="section level2">
 <h2>Background &amp; Analysis</h2>
-<p>It was recently shown that removing a fraction of a dataset into a
-testing fold can artificially create a shift in label averages across
-training folds that is inversely correlated with that of their
-corresponding test folds. To address the issue, this package
-automatically subsamples points from within the training set to remove
-any differences in label average across training folds.</p>
-<p>The following example illustrates how this small correction can have
-a large impact on machine learning performance metrics, with code
-demonstrations of scikit-learn’s <code>LeaveOneOut</code> and
-RebalancedCV’s <code>RebalancedLeaveOneOut</code>. This analysis uses a
-randomly generated observation matrix <code>X</code> and a binary
-outcome vector <code>y</code>. By construction, this is an example for
-which a fair evaluation of a machine learning model should be close to
-the expected performance of a random guess, which is 0.5.</p>
+<p>It was recently shown that removing a fraction of a dataset into a testing fold can artificially create a shift in label averages across training folds that is inversely correlated with that of their corresponding test folds. To address the issue, this package automatically subsamples points from within the training set to remove any differences in label average across training folds.</p>
+<p>The following example illustrates how this small correction can have a large impact on machine learning performance metrics, with code demonstrations of scikit-learn’s <code>LeaveOneOut</code> and RebalancedCV’s <code>RebalancedLeaveOneOut</code>. This analysis uses a randomly generated observation matrix <code>X</code> and a binary outcome vector <code>y</code>. By construction, this is an example for which a fair evaluation of a machine learning model should be close to the expected performance of a random guess, which is 0.5.</p>
 <pre class="python"><code>import numpy as np 
 import pandas as pd
 from sklearn.linear_model import LogisticRegressionCV
@@ -449,30 +423,12 @@ print(&#39;Rebalanceed Leave-one-out auROC: {:.2f}&#39;\
               .format(  roc_auc_score(y, rloocv_predictions) ) )</code></pre>
 <pre><code>Leave One Out auROC: 0.00
 Rebalanceed Leave-one-out auROC: 0.48</code></pre>
-<p>As demonstrated in this example, neglecting to account for
-distributional bias in the cross-validation classes can greatly decrease
-evaluated model performance. For more details on why this happens,
-please refer to <a href="google.com">our manuscript</a>.</p>
-<p>We note that the example’s code structure appraoch would apply to
-this package’s other <code>RebalancedKFold</code> and
-<code>RebalancedLeavePOut</code> classes.</p>
-<p>All classes from this package provide train/test indices to split
-data in train/test sets while rebalancing the training set to account
-for distributional bias. This package is designed to enable automated
-rebalancing for the cross-valition implementations in scikit-learn’s
-<code>LeaveOneOut</code>, <code>StratifiedKFold</code>, and
-<code>LeavePOut</code>, through the <code>RebalancedCV</code> classes
-<code>RebalancedLeaveOneOut</code>, <code>RebalancedKFold</code>, and
-<code>RebalancedLeavePOut</code>. These Rebalanced classes are designed
-to work in the exact same code structure and implementation use cases as
-their scikit-learn equivalents, with the only difference being a
-subsampling within the provided training indices.</p>
-<p>For more details, we provide further background and walkthroughs for
-each of these three classes in their respective documentation tabs.</p>
+<p>As demonstrated in this example, neglecting to account for distributional bias in the cross-validation classes can greatly decrease evaluated model performance. For more details on why this happens, please refer to <a href="https://arxiv.org/abs/2406.01652">our manuscript</a>.</p>
+<p>We note that the example’s code structure approach would apply to this package’s other <code>RebalancedKFold</code> and <code>RebalancedLeavePOut</code> classes.</p>
+<p>All classes from this package provide train/test indices to split data in train/test sets while rebalancing the training set to account for distributional bias. This package is designed to enable automated rebalancing for the cross-validation implementations in scikit-learn’s <code>LeaveOneOut</code>, <code>StratifiedKFold</code>, and <code>LeavePOut</code>, through the <code>RebalancedCV</code> classes <code>RebalancedLeaveOneOut</code>, <code>RebalancedKFold</code>, and <code>RebalancedLeavePOut</code>. These Rebalanced classes are designed to work in the exact same code structure and implementation use cases as their scikit-learn equivalents, with the only difference being a subsampling within the provided training indices.</p>
+<p>For more details, we provide further background and walkthroughs for each of these three classes in their respective documentation tabs.</p>
 <p><br></p>
-<p>Please report any issues faced while using RebalancedCV in our <a
-href="https://github.com/korem-lab/RebalancedCV/issues">Issues Page</a>,
-or email <a href="gia2105@columbia.edu">gia2105@columbia.edu</a>.</p>
+<p>Please report any issues faced while using RebalancedCV in our <a href="https://github.com/korem-lab/RebalancedCV/issues">Issues Page</a>, or email <a href="gia2105@columbia.edu">gia2105@columbia.edu</a>.</p>
 <p><br></p>
 </div>
 <div id="citation" class="section level2">
@@ -484,12 +440,11 @@ or email <a href="gia2105@columbia.edu">gia2105@columbia.edu</a>.</p>
   border: 2px solid black;
   margin: 20px;
   padding: 20px;
+  }
 } 
 </style>
 <div class="citation">
-<p>Austin, G.I. et al. “Correcting for distributional bias during
-leave-P-out cross-validation improves machine learning performance
-evaluation” (2024). fill in link</p>
+<p>Austin, G.I. et al. “Distributional bias compromises leave-one-out cross-validation” (2024). <a href="https://arxiv.org/abs/2406.01652" class="uri">https://arxiv.org/abs/2406.01652</a></p>
 </div>
 </div>
 

@@ -17,7 +17,7 @@ navbar:
     icon: fa-binoculars
     menu:
     - text: RebalancedCV Manuscript
-      href: www.google.com
+      href: https://arxiv.org/abs/2406.01652
   right:
   - icon: fa-comment
     href: https://github.com/korem-lab/RebalancedCV/issues
