@@ -1,12 +1,4 @@
-import numpy as np
-import pandas as pd
-
-from sklearn.utils import (
-    _approximate_mode,
-    _safe_indexing,
-    check_random_state,
-    indexable,
-)
+from sklearn.utils import indexable, check_random_state
 from sklearn.model_selection import BaseCrossValidator
 from sklearn.utils.validation import _num_samples, check_array, column_or_1d
 import numpy as np
