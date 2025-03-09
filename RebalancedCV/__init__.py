@@ -1,2 +1,3 @@
 __version__ = "0.0.1"
-from .main import RebalancedLeaveOneOut, RebalancedKFold, RebalancedLeavePOut
+from .classification import RebalancedLeaveOneOut, RebalancedKFold, RebalancedLeavePOut
+from .regression import RebalancedLeaveOneOutRegression

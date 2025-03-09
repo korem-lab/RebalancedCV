@@ -1,0 +1,28 @@
+
+{% set data = load_setup_py_data() %}
+{% set version = data.get('version') or 'placehold' %}
+
+package:
+  name: DEBIAS-M
+  version: {{ version }}
+
+source:
+  path: ../..
+
+build:
+  script: make install
+
+requirements:
+  host:
+    - python {{ python }}
+    - setuptools
+
+  run:
+    - python {{ python }}
+
+test:
+  requires:
+    - pytest
+
+  imports:
+    - rebalancedcv
