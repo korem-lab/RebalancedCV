@@ -1,5 +1,8 @@
 **RebalancedCV**
 =============
+<!-- badges: start -->
+[![main](https://github.com/korem-lab/RebalancedCV/actions/workflows/main.yml/badge.svg)](https://github.com/korem-lab/RebalancedCV/actions/workflows/main.yml)
+<!-- badges: end -->
 <img src='vignettes/RLOOCV-logo.png' align="right" height="250" />
 
 This is a python package designed to facilitate correcting for distributional bias during cross valiation.  It was recently shown that removing a fraction of a dataset into a testing fold can artificially create a shift in label averages across training folds that is inversely correlated with that of their corresponding test folds. We have demonstrated that most machine learning models' results suffer from this bias, which this package resolves by subsampling points from within the trianing set to remove any differences in label average across training folds. to begin using RebalancedCV, we recommend reading it's [documentation pages](https://korem-lab.github.io/RebalancedCV/).
