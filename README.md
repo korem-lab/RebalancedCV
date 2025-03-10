@@ -8,7 +8,7 @@
 This is a python package designed to facilitate correcting for distributional bias during cross valiation.  It was recently shown that removing a fraction of a dataset into a testing fold can artificially create a shift in label averages across training folds that is inversely correlated with that of their corresponding test folds. We have demonstrated that most machine learning models' results suffer from this bias, which this package resolves by subsampling points from within the trianing set to remove any differences in label average across training folds. to begin using RebalancedCV, we recommend reading it's [documentation pages](https://korem-lab.github.io/RebalancedCV/).
 
 
-All classes from this package provide train/test indices to split data in train/test sets while rebalancing the training set to account for distributional bias. This package is designed to enable automated rebalancing for the cross-valition implementations in scikit-learn's `LeaveOneOut`, `StratifiedKFold`, and `LeavePOut`, through the `RebalancedCV` classes `RebalancedLeaveOneOut`, `RebalancedKFold`, and `RebalancedLeavePOut`. These Rebalanced classes are designed to work in the exact same code structure and implementation use cases as their scikit-learn equivalents, with the only difference being a subsampling within the provided training indices.
+All classes from this package provide train/test indices to split data in train/test sets while rebalancing the training set to account for distributional bias. This package is designed to enable automated rebalancing for the cross-valition implementations in formats similar to scikit-learn's `LeaveOneOut`, `StratifiedKFold`, and `LeavePOut`, through the `RebalancedCV` classes `RebalancedLeaveOneOut`, `RebalancedLeaveOneOutRegression`, `RebalancedKFold`, and `RebalancedLeavePOut`. These Rebalanced classes are designed to work in the exact same code structure and implementation use cases as their scikit-learn equivalents, with the only difference being a subsampling within the provided training indices.
 
 
 **Installation**
@@ -16,7 +16,7 @@ All classes from this package provide train/test indices to split data in train/
 ```bash
 pip install git+https://github.com/korem-lab/RebalancedCV.git
 ```
-The dependencies for RebalancedCV are python, numpy, and scikit-learn. Is has been developped and tested using python 3.6 - 3.9. Only standard hardware is required for RebalancedCV. The typical install time for RebalancedCV is less that 15 seconds. 
+The dependencies for RebalancedCV are python, numpy, and scikit-learn. Is has been developped and tested using python 3.6 - 3.12. Only standard hardware is required for RebalancedCV. The typical install time for RebalancedCV is less that 15 seconds. 
 
 
 **Example**
@@ -113,7 +113,14 @@ Provides train/test indices to split data in train/test sets with rebalancing to
 ##### **Parameters**
      p : int
         Size of the test sets. Must be strictly less than one half of the number of samples.
+        
 
+### RebalancedLeaveOneOutRegression
+
+Designed for regression tasks. Provides train/test indices to split data in train/test sets with rebalancing to ensure that all training folds have similar labels balances. Each sample is used once as a test set, while the remaining samples form the training set. See sklearn.model_selection.LeaveOneOut for more details on Leave-one-out cross-validation. 
+
+##### **Parameters**
+No parameters are used for this class 
 
 **Parameters for `.split()` method**
 ----------
@@ -134,6 +141,7 @@ All three of this package's classes use the `split` method, which all use the fo
     
 `test_index` : ndarray
     The testing set indices for that split.
+
 
 
 **Citation**
