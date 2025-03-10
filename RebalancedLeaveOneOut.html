@@ -248,26 +248,39 @@ $(document).ready(function () {
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-        <li>
-  <a href="RebalancedLeaveOneOut.html">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     <span class="fa fa-bullseye"></span>
      
-    RebalancedLeaveOneOut
-  </a>
-</li>
-<li>
-  <a href="RebalancedKFold.html">
-    <span class="fa fa-object-group"></span>
+    Classification
      
-    RebalancedKFold
+    <span class="caret"></span>
   </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="RebalancedLeaveOneOut.html">RebalancedLeaveOneOut</a>
+    </li>
+    <li>
+      <a href="RebalancedKFold.html">RebalancedKFold</a>
+    </li>
+    <li>
+      <a href="RebalancedLeavePOut.html">RebalancedLeavePOut</a>
+    </li>
+  </ul>
 </li>
-<li>
-  <a href="RebalancedLeavePOut.html">
-    <span class="fa fa-barcode"></span>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="fa fa-sliders"></span>
      
-    RebalancedLeavePOut
+    Regression
+     
+    <span class="caret"></span>
   </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="RebalancedLeaveOneOutRegression.html">RebalancedLeaveOneOutRegression</a>
+    </li>
+  </ul>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">

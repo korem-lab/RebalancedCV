@@ -4,15 +4,20 @@ favicon: images/RLOOCV-logo.png
 navbar:
   title: RebalancedCV
   left:
-  - text: RebalancedLeaveOneOut
-    href: RebalancedLeaveOneOut.html
+  - text: Classification
     icon: fa-bullseye
-  - text: RebalancedKFold
-    href: RebalancedKFold.html
-    icon: fa-object-group
-  - text: RebalancedLeavePOut
-    href: RebalancedLeavePOut.html
-    icon: fa-barcode
+    menu:
+    - text: RebalancedLeaveOneOut
+      href: RebalancedLeaveOneOut.html
+    - text: RebalancedKFold
+      href: RebalancedKFold.html
+    - text: RebalancedLeavePOut
+      href: RebalancedLeavePOut.html
+  - text: Regression
+    icon: fa-sliders
+    menu:
+    - text: RebalancedLeaveOneOutRegression
+      href: RebalancedLeaveOneOutRegression.html
   - text: Related documents
     icon: fa-binoculars
     menu:

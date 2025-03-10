@@ -1,0 +1,195 @@
+---
+title: 
+output: 
+    html_document:
+       theme: yeti
+---
+
+<style>
+.darkgreen {
+  background-color: #577836;
+  color: white;
+  border: 2px solid black;
+  margin: 20px;
+  padding: 20px;
+} 
+  li {
+    list-style-type: none
+  }
+</style>
+
+<style>
+    body { 
+            background-color: #4D251C;
+            text-color: whitesmoke;
+            color: whitesmoke;
+            font-family: Palatino;
+            font-size: 12pt;
+            margin: 20px;
+            padding: 20px;
+            }
+   a:link {
+            color: #577836; 
+            background-color: transparent; 
+            }
+  a:visited {
+            color: #577836;
+            background-color: transparent;
+          }
+  a:active {
+    color: #577836;
+    background-color: transparent;
+  }
+  a:hover {
+    color: #577836;
+    background-color: transparent;
+    text-decoration: underline;
+  }
+</style>
+
+<br>
+<center> <h1> rebalancedcv.**RebalancedLeaveOneOutRegression** </h1> </center>
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy(c('r', 'python', 'bash'), 
+               position = c("top", "right"),
+               color='brown',
+               tooltip_message = "Copy",
+               tooltip_success = "Copied!"
+               )
+```
+
+<style>
+.darkgrey {
+  background-color: #333333;
+  color: white;
+  border: 2px solid #577836;
+  margin: 20px;
+  padding:10px;
+} 
+</style>
+<div class="darkgrey">
+*class* rebalancedcv.**RebalancedLeaveOneOutRegression**()
+</div>
+<br>
+
+Description
+------------
+
+<div class="darkgreen">
+Rebalanced Leave-One-Out cross-validator for regression.
+
+Provides train/test indices to split data in train/test sets. Each
+sample is used once as a test set (singleton) while the remaining
+samples are used to form the training set, 
+with subsampling to ensure similar label balances for all training sets across all splits.
+
+This class is designed to have the same functionality and 
+implementation structure as scikit-learn's ``LeaveOneOut()``
+
+At least three observations are needed for `RebalancedLeaveOneOutRegression`.
+</div>
+
+Examples
+--------
+
+
+```python
+### Observing the indices on a small example dataset
+import numpy as np
+np.random.seed(1)
+from rebalancedcv import RebalancedLeaveOneOutRegression
+X = np.array([[1, 2, 1, 2], [3, 4, 3, 4]]).T
+y = np.array([1.9, 2.2, 2.4, 2.5])
+rloo = RebalancedLeaveOneOutRegression()
+for i, (train_index, test_index) in enumerate(rloo.split(X, y)):
+    print(f"Fold {i}:")
+    print(f"  Train: index={train_index}")
+    print(f"  Test:  index={test_index}")
+```
+
+    Fold 0:
+      Train: index=[1 3]
+      Test:  index=[0]
+    Fold 1:
+      Train: index=[2 3]
+      Test:  index=[1]
+    Fold 2:
+      Train: index=[1 3]
+      Test:  index=[2]
+    Fold 3:
+      Train: index=[0 2]
+      Test:  index=[3]
+
+
+
+
+Methods
+--------
+
+The methods of the `RebalancedLeaveOneOutRegression` class are designed to enable identical funcitonality to scikit-learn's [`LeaveOneOut`](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.LeaveOneOut.html).
+
+<!-- <div class="alert alert-block alert-success"> -->
+<div class="darkgreen">
+<b>get_n_splits(X, y, groups=None)</b>
+<hr style="height: 2.5px; background-color: white; margin: 1px">
+  * Returns the number of splitting iterations in the cross-validator.
+* <hr style="height: 2.5px; background-color: white; margin: 1px">
+    * <u><b>Parameters</b></u>
+      * <b>X : array-like of shape (n_samples, n_features)</b>
+        * Training data, where `n_samples` is the number of samples
+              and `n_features` is the number of features.
+      * <b>y : array-like of shape (n_samples, )</b>
+        * The target vector relative to X.
+      * <b>groups : object</b>
+        * Always ignored, exists for compatibility.
+  * <hr style="height: 2.5px; background-color: white; margin: 1px">
+  * <u><b>Returns</b></u>
+       * <b>n_splits : int</b>
+          * Returns the number of splitting iterations in the cross-validator.
+</div>
+
+<div class="darkgreen">
+<b>split(X, y, groups=None, seed=None)</b> 
+<hr style="height: 2.5px; background-color: white; margin: 1px">
+  * Generate indices to split data into training and test set.
+* <hr style="height: 2.5px; background-color: white; margin: 1px">
+    * <u><b>Parameters</b></u>
+      * <b>X : array-like of shape (n_samples, n_features)</b>
+        * Training data, where `n_samples` is the number of samples and `n_features` is the number of features.
+      * <b>y : array-like of shape (n_samples,)</b>
+        * the target variable for supervised learning problems.
+      * <b>groups : array-like of shape (n_samples,), default=None</b>
+        * Group labels for the samples used while splitting the dataset into
+            train/test set.
+      * <b>seed : int, default = None</b>
+        * If provided, is used to set a seed in subsampling
+  * <hr style="height: 2.5px; background-color: white; margin: 1px">
+  * <u><b>Yields</b></u>
+      * <b>train : ndarray</b>
+        * The training set indices for that split.
+      * <b>test : ndarray</b>
+        * The testing set indices for that split.    
+</div>
+
+
+<style>
+.seealso {
+  background-color: #F6B302;
+  color: black;
+  border: 2px solid black;
+  margin: 20px;
+  padding: 20px;
+} 
+</style>
+
+<div class="seealso">
+**See also:**<br>
+[__RebalancedKFold__](RebalancedKFold.html)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Stratified K-fold iterator with training set rebalancing<br>
+[__RebalancedLeavePOut__](RebalancedLeavePOut.html)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Leave-P-out iterator with training set rebalancing<br>
+<br>
+For more background on LeaveOneOut, refer to the scikit-learn [User Guide](https://scikit-learn.org/stable/modules/cross_validation.html#leave-one-out).
+    </div>
