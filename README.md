@@ -10,7 +10,7 @@ This is a python package designed to facilitate correcting for distributional bi
 
 All classes from this package provide train/test indices to split data in train/test sets while rebalancing the training set to account for distributional bias. This package is designed to enable automated rebalancing for the cross-valition implementations in formats similar to scikit-learn's `LeaveOneOut`, `StratifiedKFold`, and `LeavePOut`, through the `RebalancedCV` classes `RebalancedLeaveOneOut`, `RebalancedLeaveOneOutRegression`, `RebalancedKFold`, and `RebalancedLeavePOut`. These Rebalanced classes are designed to work in the exact same code structure and implementation use cases as their scikit-learn equivalents, with the only difference being a subsampling within the provided training indices.
 
-For any support for using RebalancedCV, please use our <a href="https://github.com/korem-lab/RebalancedCV/issues">issues page</a> or email: gia2105@columbia.edu.
+For any support using RebalancedCV, please use our <a href="https://github.com/korem-lab/RebalancedCV/issues">issues page</a> or email: gia2105@columbia.edu.
 
 **Installation**
 -------------------
