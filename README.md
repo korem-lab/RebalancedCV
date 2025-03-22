@@ -14,7 +14,7 @@ All classes from this package provide train/test indices to split data in train/
 **Installation**
 -------------------
 ```bash
-pip install git+https://github.com/korem-lab/RebalancedCV.git
+pip install RebalancedCV
 ```
 The dependencies for RebalancedCV are python, numpy, and scikit-learn. Is has been developped and tested using python 3.6 - 3.12. Only standard hardware is required for RebalancedCV. The typical install time for RebalancedCV is less that 15 seconds. 
 
