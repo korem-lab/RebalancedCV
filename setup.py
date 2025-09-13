@@ -7,7 +7,7 @@ def read(fname):
 
 setup(
     name='RebalancedCV',
-    version='0.0.1',
+    version='0.1.0',
     author='George Austin', 
     author_email='gia2105@columbia.edu', 
     url='https://github.com/korem-lab/RebalancedCV',
