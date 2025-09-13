@@ -5,7 +5,8 @@ import numpy as np
 from sklearn.linear_model import LogisticRegression, LinearRegression
 from sklearn.model_selection import LeaveOneOut
 from rebalancedcv import RebalancedLeaveOneOut, RebalancedKFold, \
-                        RebalancedLeavePOut, RebalancedLeaveOneOutRegression
+                        RebalancedLeavePOut, RebalancedLeaveOneOutRegression, \
+                            MulticlassRebalancedLeaveOneOut
 
 from sklearn.metrics import roc_auc_score
 
@@ -34,18 +35,43 @@ class DMtest(unittest.TestCase):
         ## generate some random `X` matrix, and a `y` binary vector
         X = np.random.rand(n_samples, n_features)
         y = np.random.rand(n_samples) > class_balance
+        
+        if cv_object==MulticlassRebalancedLeaveOneOut:
+            y = ( np.random.rand(n_samples) * 4 ).astype(int)
+            
+            cv_summary = [ ( LogisticRegression(C=1e-4)\
+                                        .fit(X[train_index], 
+                                             y[train_index])\
+                                        .predict_proba(X[test_index]
+                                                    ), 
+                                  y[test_index] )
+                          for train_index, test_index in cvo.split(X, y) ]
 
-        cv_summary = [ ( LogisticRegression(C=1e-4)\
-                                    .fit(X[train_index], 
-                                         y[train_index])\
-                                    .predict_proba(X[test_index]
-                                                )[:, 1], 
-                              y[test_index] )
-                      for train_index, test_index in cvo.split(X, y) ]
 
-        score= roc_auc_score(flatten([a[1] for a in cv_summary]),
-                             flatten([a[0] for a in cv_summary])
-                             )
+
+            score= roc_auc_score(flatten([a[1] for a in cv_summary]),
+                                 flatten([a[0] for a in cv_summary]), 
+                                 multi_class='ovr'
+                                 )
+            
+            
+        else:    
+
+            cv_summary = [ ( LogisticRegression(C=1e-4)\
+                                        .fit(X[train_index], 
+                                             y[train_index])\
+                                        .predict_proba(X[test_index]
+                                                    )[:, 1], 
+                                  y[test_index] )
+                          for train_index, test_index in cvo.split(X, y) ]
+
+
+
+            score= roc_auc_score(flatten([a[1] for a in cv_summary]),
+                                 flatten([a[0] for a in cv_summary])
+                                 )
+        
+        
 
         ## confirm aurocs are close to 0.5
         self.assertTrue( score > .35 )
@@ -93,7 +119,7 @@ class DMtest(unittest.TestCase):
         self.assertTrue( np.max(train_means) - np.min(train_means) <= 1e-2 )
     
     def test_all_classification_cvs(self):
-        for cv in [RebalancedLeaveOneOut, RebalancedKFold, RebalancedLeavePOut]:
+        for cv in [RebalancedLeaveOneOut, RebalancedKFold, RebalancedLeavePOut, MulticlassRebalancedLeaveOneOut]:
             self.run_classification_cv(cv)
             
     def test_all_regression_cvs(self):
