@@ -71,7 +71,7 @@ klippy::klippy(c('r', 'python', 'bash', 'bashform'),
 Welcome to [__RebalancedCV__](index.html)! This is a python package designed to facilitate correcting for distributional bias during cross validation.  
 <br>
 </div>
-RebalancedCV contains the following three classes: [__RebalancedLeaveOneOut__](RebalancedLeaveOneOut.html), [__RebalancedKFold__](RebalancedKFold.html), [__RebalancedLeavePOut__](RebalancedLeavePOut.html), and [__RebalancedLeaveOneOutRegression__](RebalancedLeaveOneOutRegression.html). These are implementations for `Leave One Out`, `Stratified K-Fold`, and `Leave P Out` cross-validation with sub-sampling within training sets to ensure that, for any cross-validation scheme, the class balances across all training folds are identical.
+RebalancedCV contains the following three classes: [__RebalancedLeaveOneOut__](RebalancedLeaveOneOut.html), [__RebalancedKFold__](RebalancedKFold.html), [__RebalancedLeavePOut__](RebalancedLeavePOut.html), [__RebalancedLeaveOneOutRegression__](RebalancedLeaveOneOutRegression.html), and [__MulticlassRebalancedLeaveOneOut.html__](MulticlassRebalancedLeaveOneOut.html). These are implementations for `Leave One Out`, `Stratified K-Fold`, and `Leave P Out` cross-validation with sub-sampling within training sets to ensure that, for any cross-validation scheme, the class balances across all training folds are identical.
 
 <br>
 For any support using RebalancedCV, please use our <a href="https://github.com/korem-lab/RebalancedCV/issues">issues page</a> or email [gia2105@columbia.edu](gia2105@columbia.edu). 
@@ -87,7 +87,7 @@ The only dependencies are `python` and `scikit-learn`
 ## Loading
 
 ```python
-from rebalancedcv import RebalancedLeaveOneOut, RebalancedKFold, RebalancedLeavePOut, RebalancedLeaveOneOutRegression
+from rebalancedcv import RebalancedLeaveOneOut, RebalancedKFold, RebalancedLeavePOut, RebalancedLeaveOneOutRegression, MulticlassRebalancedLeaveOneOut
 ```
 <br>
 
