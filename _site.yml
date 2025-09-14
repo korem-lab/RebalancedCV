@@ -9,6 +9,8 @@ navbar:
     menu:
     - text: RebalancedLeaveOneOut
       href: RebalancedLeaveOneOut.html
+    - text: MulticlassRebalancedLeaveOneOut
+      href: MulticlassRebalancedLeaveOneOut.html
     - text: RebalancedKFold
       href: RebalancedKFold.html
     - text: RebalancedLeavePOut

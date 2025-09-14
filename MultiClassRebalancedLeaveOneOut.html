@@ -11,15 +11,15 @@
 
 
 
-<title>RebalancedLeavePOut.knit</title>
+<title>MulticlassRebalancedLeaveOneOut.knit</title>
 
-<script src="RebalancedLeavePOut_files/header-attrs-2.20/header-attrs.js"></script>
-<script src="RebalancedLeavePOut_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="MulticlassRebalancedLeaveOneOut_files/header-attrs-2.20/header-attrs.js"></script>
+<script src="MulticlassRebalancedLeaveOneOut_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="RebalancedLeavePOut_files/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
-<script src="RebalancedLeavePOut_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
-<script src="RebalancedLeavePOut_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
-<script src="RebalancedLeavePOut_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<link href="MulticlassRebalancedLeaveOneOut_files/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
+<script src="MulticlassRebalancedLeaveOneOut_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="MulticlassRebalancedLeaveOneOut_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="MulticlassRebalancedLeaveOneOut_files/bootstrap-3.3.5/shim/respond.min.js"></script>
 <style>h1 {font-size: 34px;}
        h1.title {font-size: 38px;}
        h2 {font-size: 30px;}
@@ -29,15 +29,15 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
-<script src="RebalancedLeavePOut_files/navigation-1.1/tabsets.js"></script>
-<link href="RebalancedLeavePOut_files/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
-<script src="RebalancedLeavePOut_files/highlightjs-9.12.0/highlight.js"></script>
-<script src="RebalancedLeavePOut_files/clipboard-1.7.1/clipboard.min.js"></script>
-<link href="RebalancedLeavePOut_files/primer-tooltips-1.4.0/build.css" rel="stylesheet" />
-<link href="RebalancedLeavePOut_files/klippy-0.0.0.9500/css/klippy.min.css" rel="stylesheet" />
-<script src="RebalancedLeavePOut_files/klippy-0.0.0.9500/js/klippy.min.js"></script>
-<link href="RebalancedLeavePOut_files/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
-<link href="RebalancedLeavePOut_files/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<script src="MulticlassRebalancedLeaveOneOut_files/navigation-1.1/tabsets.js"></script>
+<link href="MulticlassRebalancedLeaveOneOut_files/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="MulticlassRebalancedLeaveOneOut_files/highlightjs-9.12.0/highlight.js"></script>
+<script src="MulticlassRebalancedLeaveOneOut_files/clipboard-1.7.1/clipboard.min.js"></script>
+<link href="MulticlassRebalancedLeaveOneOut_files/primer-tooltips-1.4.0/build.css" rel="stylesheet" />
+<link href="MulticlassRebalancedLeaveOneOut_files/klippy-0.0.0.9500/css/klippy.min.css" rel="stylesheet" />
+<script src="MulticlassRebalancedLeaveOneOut_files/klippy-0.0.0.9500/js/klippy.min.js"></script>
+<link href="MulticlassRebalancedLeaveOneOut_files/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="MulticlassRebalancedLeaveOneOut_files/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -348,7 +348,7 @@ $(document).ready(function () {
             margin: 20px;
             padding: 20px;
             }
-       a:link {
+   a:link {
             color: #577836; 
             background-color: transparent; 
             }
@@ -369,7 +369,7 @@ $(document).ready(function () {
 <br>
 <center>
 <h1>
-rebalancedcv.<strong>RebalancedLeavePOut</strong>
+rebalancedcv.<strong>MulticlassRebalancedLeaveOneOut</strong>
 </h1>
 </center>
 <script>
@@ -387,107 +387,79 @@ rebalancedcv.<strong>RebalancedLeavePOut</strong>
 </style>
 <div class="darkgrey">
 <p><em>class</em>
-rebalancedcv.<strong>RebalancedLeavePOut</strong>(p)</p>
+rebalancedcv.<strong>MulticlassRebalancedLeaveOneOut</strong>()</p>
 </div>
 <p><br></p>
 <div id="description" class="section level2">
 <h2>Description</h2>
 <div class="darkgreen">
-<p>Rebalanced Leave-P-Out cross-validator.</p>
-<p>Provides train/test indices to split data in train/test sets with
-subsampling within the training set to ensure that all training folds
-have identical class balances. This cross-validation tests on all
-distinct samples of size p, while a remaining n - 2p samples form the
-training set in each iteration, with an additional p samples used to
-subsamples from within the training set.</p>
+<p>Multiclass Rebalanced Leave-One-Out cross-validator. Designed to
+handle a number of <code>y</code> classes greater than 2.</p>
+<p>Provides train/test indices to split data in train/test sets. Each
+sample is used once as a test set (singleton) while the remaining
+samples are used to form the training set, with subsampling to ensure
+identical class balances for all training sets across all splits.</p>
 <p>This class is designed to have the same functionality and
-implementation structure as scikit-learn’s <code>LeavePOut()</code></p>
-<p>Note: Similarly to what was previously mentioned in scikit-learn’s
-documentation, RebalancedLeavePOut(p) is NOT equivalent to
-RebalancedKFold(n_splits=n_samples // p) which creates non-overlapping
-test sets. Due to the high number of iterations which grows
-combinatorically with the number of samples this cross-validation method
-can be very costly.</p>
-<p>At least 1+p observations per class are needed for
-<code>RebalancedLeavePOut</code>.</p>
+implementation structure as scikit-learn’s
+<code>LeaveOneOut()</code></p>
+<p>At least two observations per class are needed for
+<code>MulticlassRebalancedLeaveOneOut</code>.</p>
 </div>
 </div>
-<div id="parameters" class="section level2">
-<h2>Parameters</h2>
-<div class="darkgreen">
-<ul>
-<li><b>p : int</b>
-<ul>
-<li>Number of points to be left out in each testing fold</li>
-</ul></li>
-</ul>
-</div>
-</div>
-<div id="example" class="section level2">
-<h2>Example</h2>
+<div id="examples" class="section level2">
+<h2>Examples</h2>
 <pre class="python"><code>### Observing the indices on a small example dataset
 import numpy as np
 np.random.seed(1)
-from rebalancedcv import RebalancedLeavePOut
-X = np.array([[1, 2, 1, 2, 1, 2], [3, 4, 3, 4, 3, 4]]).T
-y = np.array([0,1,0,1,0,1])
-rloo = RebalancedLeavePOut(p=2)
-for i, (train_index, test_index) in enumerate(rloo.split(X, y)):
+from rebalancedcv import MulticlassRebalancedLeaveOneOut
+X = np.array([[1, 2, 3, 1, 2, 3], [3, 4, 5, 3, 4, 5]]).T
+y = np.array([1, 2, 3, 1, 2, 3])
+mrloo = MulticlassRebalancedLeaveOneOut()
+for i, (train_index, test_index) in enumerate(mrloo.split(X, y)):
     print(f&quot;Fold {i}:&quot;)
     print(f&quot;  Train: index={train_index}&quot;)
     print(f&quot;  Test:  index={test_index}&quot;)</code></pre>
 <pre><code>Fold 0:
-  Train: index=[4 5]
-  Test:  index=[0 1]
+  Train: index=[1 2 3]
+  Test:  index=[0]
 Fold 1:
-  Train: index=[1 4]
-  Test:  index=[0 2]
+  Train: index=[0 2 4]
+  Test:  index=[1]
 Fold 2:
-  Train: index=[4 5]
-  Test:  index=[0 3]
+  Train: index=[0 1 4]
+  Test:  index=[2]
 Fold 3:
-  Train: index=[2 3]
-  Test:  index=[0 4]
-Fold 4:
-  Train: index=[1 2]
-  Test:  index=[0 5]
-Fold 5:
-  Train: index=[3 4]
-  Test:  index=[1 2]
-Fold 6:
-  Train: index=[2 5]
-  Test:  index=[1 3]
-Fold 7:
-  Train: index=[0 5]
-  Test:  index=[1 4]
-Fold 8:
-  Train: index=[3 4]
-  Test:  index=[1 5]
-Fold 9:
-  Train: index=[0 5]
-  Test:  index=[2 3]
-Fold 10:
-  Train: index=[0 5]
-  Test:  index=[2 4]
-Fold 11:
-  Train: index=[1 4]
-  Test:  index=[2 5]
-Fold 12:
-  Train: index=[0 1]
-  Test:  index=[3 4]
-Fold 13:
-  Train: index=[1 2]
-  Test:  index=[3 5]
-Fold 14:
-  Train: index=[0 1]
-  Test:  index=[4 5]</code></pre>
+  Train: index=[0 1 2]
+  Test:  index=[3]
+...</code></pre>
+<pre class="python"><code>### Implementing a LogisticRegressionCV evaluation on randomly generated data
+### using RebalancedLeaveOneOut
+import numpy as np 
+from sklearn.linear_model import LogisticRegressionCV
+from rebalancedcv import MulticlassRebalancedLeaveOneOut
+from sklearn.metrics import roc_auc_score
+
+## given some random `X` matrix, and a `y` binary vector
+X = np.random.rand(100, 10)
+y = ( np.random.rand(100) * 4 ).astype(int)
+
+## Rebalanced leave-one-out evaluation
+mrloo = MulticlassRebalancedLeaveOneOut()
+rloocv_predictions = [ LogisticRegressionCV()\
+                                .fit(X[train_index], y[train_index])\
+                                .predict_proba(X[test_index]
+                                            )
+                      for train_index, test_index in mrloo.split(X,y) 
+                     ]
+</code></pre>
 <p><br></p>
 </div>
 <div id="methods" class="section level2">
 <h2>Methods</h2>
-<p>The methods of the <code>RebalancedLeavePOut</code> class are
-designed to enable identical funcitonality to scikit-learn’s <a
-href="https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.LeavePOut.html"><code>LeavePOut</code></a>.</p>
+<p>The methods of the <code>MulticlassRebalancedLeaveOneOut</code> class
+are designed to enable identical funcitonality to scikit-learn’s <a
+href="https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.LeaveOneOut.html"><code>LeaveOneOut</code></a>.</p>
+<!-- <div class="alert alert-block alert-success"> -->
 <div class="darkgreen">
 <b>get_n_splits(X, y, groups=None)</b>
 <hr style="height: 2.5px; background-color: white; margin: 1px">
@@ -539,7 +511,7 @@ and <code>n_features</code> is the number of features.</li>
 </ul></li>
 <li><b>y : array-like of shape (n_samples,)</b>
 <ul>
-<li>The target variable for supervised learning problems.</li>
+<li>the target variable for supervised learning problems.</li>
 </ul></li>
 <li><b>groups : array-like of shape (n_samples,), default=None</b>
 <ul>
@@ -575,17 +547,15 @@ train/test set.</li>
   margin: 20px;
   padding: 20px;
 } 
-
-l{color: darkgreen}
 </style>
 <div class="seealso">
 <strong>See also:</strong><br> <a
 href="RebalancedKFold.html"><strong>RebalancedKFold</strong></a><br>
        Stratified K-fold iterator with training set rebalancing<br> <a
-href="RebalancedLeaveOneOut.html"><strong>RebalancedLeaveOneOut</strong></a><br>
-       Leave-one-out iterator with training set rebalancing<br> <br> For
-more background on LeavePOut, refer to the scikit-learn <a
-href="https://scikit-learn.org/stable/modules/cross_validation.html#leave-p-out">User
+href="RebalancedLeavePOut.html"><strong>RebalancedLeavePOut</strong></a><br>
+       Leave-P-out iterator with training set rebalancing<br> <br> For
+more background on LeaveOneOut, refer to the scikit-learn <a
+href="https://scikit-learn.org/stable/modules/cross_validation.html#leave-one-out">User
 Guide</a>.
 </div>
 </div>
