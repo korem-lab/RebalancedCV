@@ -147,4 +147,4 @@ All three of this package's classes use the `split` method, which all use the fo
 
 **Citation**
 -------
-Austin, G.I. et al. “Distributional bias compromises leave-one-out cross-validation” (2024). https://arxiv.org/abs/2406.01652
+Austin, G.I., Pe'er I., & Korem T. “Distributional bias compromises leave-one-out cross-validation” Science Advances 11(48): eadx6976 (2025). [https://arxiv.org/abs/2406.01652](https://www.science.org/doi/full/10.1126/sciadv.adx6976)
