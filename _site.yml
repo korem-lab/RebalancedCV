@@ -24,7 +24,7 @@ navbar:
     icon: fa-binoculars
     menu:
     - text: RebalancedCV Manuscript
-      href: https://arxiv.org/abs/2406.01652
+      href: https://www.science.org/doi/full/10.1126/sciadv.adx6976
   right:
   - icon: fa-comment
     href: https://github.com/korem-lab/RebalancedCV/issues

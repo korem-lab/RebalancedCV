@@ -167,5 +167,7 @@ For more details, we provide further background and walkthroughs for each of the
 </style>
 
 <div class="citation">
-Austin, G.I. et al. "Distributional bias compromises leave-one-out cross-validation" (2024). https://arxiv.org/abs/2406.01652
+Austin, G.I., Pe'er I., & Korem T. “Distributional bias compromises leave-one-out cross-validation” Science Advances 11(48): eadx6976 (2025). [10.1126/sciadv.adx6976](https://doi.org/10.1126/sciadv.adx6976)
 </div>
+
+<!-- Austin, G.I. et al. "Distributional bias compromises leave-one-out cross-validation" (2024). https://arxiv.org/abs/2406.01652 -->
