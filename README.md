@@ -8,7 +8,7 @@
 This is a python package designed to facilitate correcting for distributional bias during cross valiation.  It was recently shown that removing a fraction of a dataset into a testing fold can artificially create a shift in label averages across training folds that is inversely correlated with that of their corresponding test folds. We have demonstrated that most machine learning models' results suffer from this bias, which this package resolves by subsampling points from within the trianing set to remove any differences in label average across training folds. to begin using RebalancedCV, we recommend reading it's [documentation pages](https://korem-lab.github.io/RebalancedCV/).
 
 
-All classes from this package provide train/test indices to split data in train/test sets while rebalancing the training set to account for distributional bias. This package is designed to enable automated rebalancing for the cross-valition implementations in formats similar to scikit-learn's `LeaveOneOut`, `StratifiedKFold`, and `LeavePOut`, through the `RebalancedCV` classes `RebalancedLeaveOneOut`, `RebalancedLeaveOneOutRegression`, `RebalancedKFold`, and `RebalancedLeavePOut`. These Rebalanced classes are designed to work in the exact same code structure and implementation use cases as their scikit-learn equivalents, with the only difference being a subsampling within the provided training indices.
+All classes from this package provide train/test indices to split data in train/test sets while rebalancing the training set to account for distributional bias. This package is designed to enable automated rebalancing for the cross-valition implementations in formats similar to scikit-learn's `LeaveOneOut`, `StratifiedKFold`, `LeavePOut`, and `LeaveOneGroupOut`, through the `RebalancedCV` classes `RebalancedLeaveOneOut`, `RebalancedLeaveOneOutRegression`, `RebalancedKFold`, `RebalancedLeavePOut`, and `RebalancedLeaveOneGroupOut`. These Rebalanced classes are designed to work in the exact same code structure and implementation use cases as their scikit-learn equivalents, with the only difference being a subsampling within the provided training indices.
 
 For any support using RebalancedCV, please use our <a href="https://github.com/korem-lab/RebalancedCV/issues">issues page</a> or email: gia2105@columbia.edu.
 
@@ -114,7 +114,13 @@ Provides train/test indices to split data in train/test sets with rebalancing to
 ##### **Parameters**
      p : int
         Size of the test sets. Must be strictly less than one half of the number of samples.
-        
+
+### RebalancedLeaveOneGroupOut
+
+Provides train/test indices to split data in train/test sets with rebalancing when splitting by **groups**. Each fold holds out one group as the test set and uses the rest for training; the training set is then subsampled so that every fold has the same number of samples per class (avoiding distributional bias). The `groups` parameter is **required**. At least two groups are needed. See sklearn.model_selection.LeaveOneGroupOut for Leave-one-group-out cross-validation.
+
+##### **Parameters**
+No parameters are used for this class. `groups` must be passed to `split(X, y, groups)` and `get_n_splits(groups=groups)`.
 
 ### RebalancedLeaveOneOutRegression
 
@@ -131,7 +137,7 @@ All three of this package's classes use the `split` method, which all use the fo
 `y` : array-like of shape (n_samples,); The target variable for supervised learning problems.  At least two observations per class are needed for RebalancedLeaveOneOut
 
 `groups` : array-like of shape (n_samples,), default=None; Group labels for the samples used while splitting the dataset into
-    train/test set.
+    train/test set. Required for RebalancedLeaveOneGroupOut; optional (and ignored) for other classes.
     
 `seed` : Integer, default=None; can be specified to enforce consistency in the subsampling
 

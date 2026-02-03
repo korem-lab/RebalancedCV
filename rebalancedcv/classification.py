@@ -2,6 +2,7 @@ from sklearn.utils import indexable, check_random_state
 from sklearn.model_selection import BaseCrossValidator
 from sklearn.utils.validation import _num_samples, check_array, column_or_1d
 import numpy as np
+import warnings
 
 import numbers
 from sklearn.utils.validation import _deprecate_positional_args
@@ -656,20 +657,180 @@ class MulticlassRebalancedLeaveOneOut(BaseCrossValidator):
         if X is None:
             raise ValueError("The 'X' parameter should not be None.")
         return _num_samples(X)
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
 
+
+class RebalancedLeaveOneGroupOut(BaseCrossValidator):
+    """Rebalanced Leave-One-Group-Out cross-validator.
+
+    Provides train/test indices to split data in train/test sets. Each fold
+    holds out one group as the test set and uses the remaining samples as
+    the training set, with subsampling so that every training fold has the
+    same number of samples per class (avoiding distributional bias across
+    folds).
+
+    This class mirrors scikit-learn's ``LeaveOneGroupOut()`` with the same
+    rebalancing idea as the rest of this package: the ``groups`` parameter
+    is required and defines the folds; rebalancing is applied only to the
+    training set within each fold.
+
+    At least two groups are required. For rebalancing to be non-degenerate,
+    every class should appear in at least two groups so that when one group
+    is left out, every class still has at least one sample in the training set.
+    If some class has zero samples in a training fold, that class is omitted
+    from the subsampled training set for that fold (and a warning can be
+    raised in strict settings).
+
+    Parameters
+    ----------
+    None.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from rebalancedcv import RebalancedLeaveOneGroupOut
+    >>> X = np.array([[1, 2], [3, 4], [5, 6], [7, 8], [9, 10], [11, 12]])
+    >>> y = np.array([0, 0, 1, 1, 0, 1])
+    >>> groups = np.array([1, 1, 1, 2, 2, 2])
+    >>> rlogo = RebalancedLeaveOneGroupOut()
+    >>> for i, (train_index, test_index) in enumerate(rlogo.split(X, y, groups)):
+    ...     print(f"Fold {i}: Train={train_index}, Test={test_index}")
+    """
+
+    def _iter_test_masks(self, X, y=None, groups=None):
+        """Yield one boolean mask per unique group (True = test set for that fold)."""
+        if groups is None:
+            raise ValueError("RebalancedLeaveOneGroupOut requires the 'groups' argument.")
+        groups = np.asarray(groups)
+        n_samples = _num_samples(X)
+        if len(groups) != n_samples:
+            raise ValueError(
+                "The length of 'groups' ({}) must equal the number of samples ({})."
+                .format(len(groups), n_samples)
+            )
+        unique_groups = np.unique(groups)
+        if len(unique_groups) < 2:
+            raise ValueError(
+                "RebalancedLeaveOneGroupOut requires at least 2 groups, got {}."
+                .format(len(unique_groups))
+            )
+        # Splits ordered by group index (match sklearn LeaveOneGroupOut)
+        for g in unique_groups:
+            yield groups == g
+
+    def split(self, X, y, groups=None, seed=None):
+        """Generate indices to split data into training and test set.
+
+        Parameters
+        ----------
+        X : array-like of shape (n_samples, n_features)
+            Training data.
+
+        y : array-like of shape (n_samples,)
+            The target variable for supervised learning (classification).
+
+        groups : array-like of shape (n_samples,)
+            Group labels for each sample. Required. Each fold holds out one
+            unique group as test and uses the rest for training (then
+            subsampled for consistent class balance).
+
+        seed : int or None, default=None
+            Random seed for subsampling reproducibility.
+
+        Yields
+        ------
+        train : ndarray
+            Training set indices (subsampled for consistent class balance).
+
+        test : ndarray
+            Test set indices (all samples in the left-out group).
+        """
+        if seed is not None:
+            np.random.seed(seed)
+
+        X, y, groups = indexable(X, y, groups)
+        n_samples = _num_samples(X)
+        groups = np.asarray(groups)
+        y = np.asarray(y)
+        type_of_target_y = type_of_target(y)
+        if type_of_target_y not in ("binary", "multiclass"):
+            raise ValueError(
+                "Supported target types are: binary, multiclass. Got {!r}."
+                .format(type_of_target_y)
+            )
+        y = column_or_1d(y)
+
+        # Encode labels as 0, 1, ... for bincount (works for any dtype, binary or multiclass)
+        unique_labels, y_encoded = np.unique(y, return_inverse=True)
+        n_classes = len(unique_labels)
+        total_count = np.bincount(y_encoded, minlength=n_classes) # (n_classes,) note that y_encoded are indices, not actual labels
+
+        unique_groups = np.unique(groups)
+        # Per-group class counts: (n_groups, n_classes)
+        group_class_count = np.zeros((len(unique_groups), n_classes), dtype=int)
+        for ig, g in enumerate(unique_groups):
+            mask = groups == g
+            group_class_count[ig] = np.bincount(y_encoded[mask], minlength=n_classes)
+
+        # Minimum training samples per class across all folds (same in every fold after subsample)
+        # For fold leaving out group g: train count for class k = total_count[k] - group_class_count[g,k]
+        min_train_count = total_count - group_class_count.max(axis=0) # (n_classes,)
+
+        # Warn if any class has no samples in the training set for at least one fold (all in one group)
+        omitted = np.where(min_train_count <= 0)[0]
+        if len(omitted) > 0:
+            omitted_labels = [unique_labels[k] for k in omitted]
+            warnings.warn(
+                "The following classes have no samples in the training set for at least one fold "
+                "(all samples belong to a single group) and are omitted from the rebalanced "
+                "training set: {}. Consider checking group/label alignment.".format(omitted_labels),
+                UserWarning,
+                stacklevel=2,
+            )
+
+        indices = np.arange(n_samples)
+        for test_mask in self._iter_test_masks(X, y, groups):
+            train_mask = ~test_mask
+            train_index = indices[train_mask]
+            test_index = indices[test_mask]
+
+            # Subsample training set so each class has min_train_count[k] samples
+            train_parts = []
+            for k in range(n_classes):
+                n_k = int(min_train_count[k])
+                if n_k <= 0: # if the class has no samples in the training set, skip it
+                    continue
+                train_k = train_index[y_encoded[train_index] == k] # indices of the samples of class k in the training set
+                if len(train_k) < n_k:
+                    class_label = unique_labels[k]
+                    raise ValueError(
+                        "Fold has {} samples of class '{}' in train but need {} (rebalancing impossible)."
+                        .format(len(train_k), class_label, n_k)
+                    )
+                train_parts.append(
+                    np.random.choice(train_k, size=n_k, replace=False)
+                )
+            if train_parts:
+                train_index = np.sort(np.concatenate(train_parts))
+            else:
+                train_index = np.array([], dtype=int)
+
+            yield train_index, test_index
+
+    def get_n_splits(self, X=None, y=None, groups=None):
+        """Return the number of splitting iterations (number of unique groups).
+
+        Parameters
+        ----------
+        X : object
+            Ignored, for API compatibility.
+
+        y : object
+            Ignored, for API compatibility.
+
+        groups : array-like of shape (n_samples,)
+            Group labels. Must be provided to compute the number of splits.
+        """
+        if groups is None:
+            raise ValueError("RebalancedLeaveOneGroupOut requires the 'groups' argument.")
+        groups = np.asarray(groups)
+        return len(np.unique(groups))
