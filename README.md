@@ -117,7 +117,11 @@ Provides train/test indices to split data in train/test sets with rebalancing to
 
 ### RebalancedLeaveOneGroupOut
 
-Provides train/test indices to split data in train/test sets with rebalancing when splitting by **groups**. Each fold holds out one group as the test set and uses the rest for training; the training set is then subsampled so that every fold has the same number of samples per class (avoiding distributional bias). The `groups` parameter is **required**. At least two groups are needed. See sklearn.model_selection.LeaveOneGroupOut for Leave-one-group-out cross-validation.
+Provides train/test indices to split data in train/test sets with rebalancing when splitting by **groups**. Each fold holds out one group as the test set and uses the rest for training; the training set is then subsampled so that every fold has the same number of samples per class (avoiding distributional bias). The test set is never subsampled (full left-out group). The `groups` parameter is **required** (same as sklearn's LeaveOneGroupOut). At least two groups are needed.
+
+**When to use rebalancing:** Use **RebalancedLeaveOneGroupOut** when you want comparable train conditions across folds (e.g when reporting an average over groups, when comparing per-group performance in an "even" manner), or when groups merely a blocking factor and you care about unbiased overall or class-wise metrics. **When not to:** Use plain **LeaveOneGroupOut** when you only care about performance on each left-out group and are not aggregating in a way that is sensitive to train-fold balance, or when you prefer realistic train composition per fold. If groups already have similar class distributions, rebalancing is optional but doesn't hurt.
+
+See sklearn.model_selection.LeaveOneGroupOut for Leave-one-group-out cross-validation.
 
 ##### **Parameters**
 No parameters are used for this class. `groups` must be passed to `split(X, y, groups)` and `get_n_splits(groups=groups)`.

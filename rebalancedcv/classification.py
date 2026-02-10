@@ -662,27 +662,39 @@ class MulticlassRebalancedLeaveOneOut(BaseCrossValidator):
 class RebalancedLeaveOneGroupOut(BaseCrossValidator):
     """Rebalanced Leave-One-Group-Out cross-validator.
 
-    Provides train/test indices to split data in train/test sets. Each fold
-    holds out one group as the test set and uses the remaining samples as
-    the training set, with subsampling so that every training fold has the
-    same number of samples per class (avoiding distributional bias across
-    folds).
+    Provides train/test indices to split data such that each training set is
+    comprised of all samples except ones belonging to one specific group,
+    with subsampling so that every training fold has the same number of
+    samples per class (avoiding distributional bias). Rebalancing is
+    applied only to the training set; the test set is always the full
+    left-out group. Arbitrary domain-specific group information is provided
+    as an array of integers that encodes the group of each sample. For
+    instance the groups could be the year of collection of the samples and
+    thus allow for cross-validation against time-based splits.
 
-    This class mirrors scikit-learn's ``LeaveOneGroupOut()`` with the same
-    rebalancing idea as the rest of this package: the ``groups`` parameter
-    is required and defines the folds; rebalancing is applied only to the
-    training set within each fold.
+    The ``groups`` parameter is required (same as sklearn's
+    ``LeaveOneGroupOut``). At least two groups are required. For
+    rebalancing to be non-degenerate, every class should appear in at least
+    two groups; if a class has no samples in a training fold, it is omitted
+    from that fold's training set and a warning is issued.
 
-    At least two groups are required. For rebalancing to be non-degenerate,
-    every class should appear in at least two groups so that when one group
-    is left out, every class still has at least one sample in the training set.
-    If some class has zero samples in a training fold, that class is omitted
-    from the subsampled training set for that fold (and a warning can be
-    raised in strict settings).
+    Notes
+    -----
+    Splits are ordered according to the index of the group left out. The
+    first split has testing set consisting of the group whose index in
+    ``groups`` is lowest, and so on.
 
-    Parameters
-    ----------
-    None.
+    Use this class when you want leave-one-group-out *and* need to remove
+    training-fold label imbalance (e.g. comparing models or tuning
+    hyperparameters). Use plain ``LeaveOneGroupOut`` when you only care
+    about generalization to a new group.
+
+    See Also
+    --------
+    sklearn.model_selection.LeaveOneGroupOut : Leave-one-group-out without
+        training rebalancing.
+    sklearn.model_selection.GroupKFold : K-fold variant with
+        non-overlapping groups.
 
     Examples
     --------
@@ -692,30 +704,38 @@ class RebalancedLeaveOneGroupOut(BaseCrossValidator):
     >>> y = np.array([0, 0, 1, 1, 0, 1])
     >>> groups = np.array([1, 1, 1, 2, 2, 2])
     >>> rlogo = RebalancedLeaveOneGroupOut()
-    >>> for i, (train_index, test_index) in enumerate(rlogo.split(X, y, groups)):
-    ...     print(f"Fold {i}: Train={train_index}, Test={test_index}")
+    >>> rlogo.get_n_splits(groups=groups)
+    2
+    >>> print(rlogo)
+    RebalancedLeaveOneGroupOut()
+    >>> for i, (train_index, test_index) in enumerate(rlogo.split(X, y, groups, seed=42)):
+    ...     print(f"Fold {i}:")
+    ...     print(f"  Train: index={train_index}")
+    ...     print(f"  Test:  index={test_index}")
+    Fold 0:
+      Train: index=[4 5]
+      Test:  index=[0 1 2]
+    Fold 1:
+      Train: index=[0 2]
+      Test:  index=[3 4 5]
     """
 
-    def _iter_test_masks(self, X, y=None, groups=None):
-        """Yield one boolean mask per unique group (True = test set for that fold)."""
+    def _iter_test_masks(self, X, y, groups):
         if groups is None:
-            raise ValueError("RebalancedLeaveOneGroupOut requires the 'groups' argument.")
-        groups = np.asarray(groups)
-        n_samples = _num_samples(X)
-        if len(groups) != n_samples:
-            raise ValueError(
-                "The length of 'groups' ({}) must equal the number of samples ({})."
-                .format(len(groups), n_samples)
-            )
+            raise ValueError("The 'groups' parameter should not be None.")
+        # We make a copy of groups to avoid side-effects during iteration
+        groups = check_array(
+            groups, input_name="groups", copy=True, ensure_2d=False, dtype=None
+        )
         unique_groups = np.unique(groups)
-        if len(unique_groups) < 2:
+        if len(unique_groups) <= 1:
             raise ValueError(
-                "RebalancedLeaveOneGroupOut requires at least 2 groups, got {}."
-                .format(len(unique_groups))
+                "The groups parameter contains fewer than 2 unique groups "
+                "(%s). RebalancedLeaveOneGroupOut expects at least 2."
+                % unique_groups
             )
-        # Splits ordered by group index (match sklearn LeaveOneGroupOut)
-        for g in unique_groups:
-            yield groups == g
+        for i in unique_groups:
+            yield groups == i
 
     def split(self, X, y, groups=None, seed=None):
         """Generate indices to split data into training and test set.
@@ -723,15 +743,15 @@ class RebalancedLeaveOneGroupOut(BaseCrossValidator):
         Parameters
         ----------
         X : array-like of shape (n_samples, n_features)
-            Training data.
+            Training data, where `n_samples` is the number of samples and
+            `n_features` is the number of features.
 
         y : array-like of shape (n_samples,)
-            The target variable for supervised learning (classification).
+            The target variable for supervised learning problems.
 
         groups : array-like of shape (n_samples,)
-            Group labels for each sample. Required. Each fold holds out one
-            unique group as test and uses the rest for training (then
-            subsampled for consistent class balance).
+            Group labels for the samples used while splitting the dataset
+            into train/test set. Must be specified.
 
         seed : int or None, default=None
             Random seed for subsampling reproducibility.
@@ -739,11 +759,14 @@ class RebalancedLeaveOneGroupOut(BaseCrossValidator):
         Yields
         ------
         train : ndarray
-            Training set indices (subsampled for consistent class balance).
+            The training set indices for that split (subsampled for
+            consistent class balance).
 
         test : ndarray
-            Test set indices (all samples in the left-out group).
+            The testing set indices for that split (full left-out group).
         """
+        if groups is None:
+            raise ValueError("The 'groups' parameter should not be None.")
         if seed is not None:
             np.random.seed(seed)
 
@@ -817,20 +840,28 @@ class RebalancedLeaveOneGroupOut(BaseCrossValidator):
             yield train_index, test_index
 
     def get_n_splits(self, X=None, y=None, groups=None):
-        """Return the number of splitting iterations (number of unique groups).
+        """Returns the number of splitting iterations in the cross-validator.
 
         Parameters
         ----------
-        X : object
-            Ignored, for API compatibility.
+        X : array-like of shape (n_samples, n_features), default=None
+            Always ignored, exists for API compatibility.
 
-        y : object
-            Ignored, for API compatibility.
+        y : array-like of shape (n_samples,), default=None
+            Always ignored, exists for API compatibility.
 
-        groups : array-like of shape (n_samples,)
-            Group labels. Must be provided to compute the number of splits.
+        groups : array-like of shape (n_samples,), default=None
+            Group labels for the samples used while splitting the dataset
+            into train/test set. This 'groups' parameter must always be
+            specified to calculate the number of splits, though the other
+            parameters can be omitted.
+
+        Returns
+        -------
+        n_splits : int
+            Returns the number of splitting iterations in the cross-validator.
         """
         if groups is None:
-            raise ValueError("RebalancedLeaveOneGroupOut requires the 'groups' argument.")
-        groups = np.asarray(groups)
+            raise ValueError("The 'groups' parameter should not be None.")
+        groups = check_array(groups, input_name="groups", ensure_2d=False, dtype=None)
         return len(np.unique(groups))
