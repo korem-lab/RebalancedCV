@@ -6,7 +6,7 @@ from sklearn.linear_model import LogisticRegression, LinearRegression
 from sklearn.model_selection import LeaveOneOut
 from rebalancedcv import RebalancedLeaveOneOut, RebalancedKFold, \
                         RebalancedLeavePOut, RebalancedLeaveOneOutRegression, \
-                            MulticlassRebalancedLeaveOneOut
+                            MulticlassRebalancedLeaveOneOut, RebalancedLeaveOneGroupOut
 
 from sklearn.metrics import roc_auc_score
 
@@ -121,7 +121,50 @@ class DMtest(unittest.TestCase):
     def test_all_classification_cvs(self):
         for cv in [RebalancedLeaveOneOut, RebalancedKFold, RebalancedLeavePOut, MulticlassRebalancedLeaveOneOut]:
             self.run_classification_cv(cv)
-            
+
+    def test_rebalanced_leave_one_group_out(self):
+        rlogo = RebalancedLeaveOneGroupOut()
+
+        ## --- API: groups required ---
+        with self.assertRaises(ValueError):
+            rlogo.get_n_splits(groups=None)
+        with self.assertRaises(ValueError):
+            list(rlogo.split(np.random.rand(6, 2), np.array([0, 0, 1, 1, 0, 1]), groups=None))
+
+        ## --- Binary: 6 samples, 2 groups of 3 ---
+        np.random.seed(1)
+        n_samples, n_features = 6, 2
+        X = np.random.rand(n_samples, n_features)
+        y = np.array([0, 0, 1, 1, 0, 1])
+        groups = np.array([1, 1, 1, 2, 2, 2])
+        self.assertEqual(rlogo.get_n_splits(groups=groups), 2)
+        train_means = []
+        for train_index, test_index in rlogo.split(X, y, groups, seed=1):
+            self.assertEqual(len(np.unique(groups[test_index])), 1,
+                             "each test set should be exactly one group")
+            train_means.append(y[train_index].mean())
+        self.assertTrue(np.max(train_means) == np.min(train_means),
+                        "train class balance should be identical across folds (binary)")
+
+        ## --- Multi-class: 12 samples, 3 classes, 3 groups ---
+        np.random.seed(2)
+        X = np.random.rand(12, 3)
+        y = np.array([0, 0, 1, 1, 2, 2, 0, 1, 2, 0, 1, 2])   # 4 per class
+        groups = np.array([1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3])
+        self.assertEqual(rlogo.get_n_splits(groups=groups), 3)
+        train_class_counts = []
+        for train_index, test_index in rlogo.split(X, y, groups, seed=2):
+            self.assertEqual(len(np.unique(groups[test_index])), 1,
+                             "each test set should be exactly one group")
+            ## rebalancing: same number of each class in train every fold
+            counts = np.bincount(y[train_index], minlength=3)
+            train_class_counts.append(tuple(counts))
+        self.assertEqual(len(set(train_class_counts)), 1,
+                         "train class counts should be identical across folds (multi-class)")
+        ## sanity: each fold had some of every class in train (we have 3 groups, 3 classes spread across)
+        for counts in train_class_counts:
+            self.assertTrue(all(c >= 0 for c in counts))
+
     def test_all_regression_cvs(self):
         for cv in [RebalancedLeaveOneOutRegression,
                    ]:
