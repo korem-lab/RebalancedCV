@@ -71,7 +71,7 @@ klippy::klippy(c('r', 'python', 'bash', 'bashform'),
 Welcome to [__RebalancedCV__](index.html)! This is a python package designed to facilitate correcting for distributional bias during cross validation.  
 <br>
 </div>
-RebalancedCV contains the following three classes: [__RebalancedLeaveOneOut__](RebalancedLeaveOneOut.html), [__RebalancedKFold__](RebalancedKFold.html), [__RebalancedLeavePOut__](RebalancedLeavePOut.html), [__RebalancedLeaveOneOutRegression__](RebalancedLeaveOneOutRegression.html), and [__MulticlassRebalancedLeaveOneOut.html__](MulticlassRebalancedLeaveOneOut.html). These are implementations for `Leave One Out`, `Stratified K-Fold`, and `Leave P Out` cross-validation with sub-sampling within training sets to ensure that, for any cross-validation scheme, the class balances across all training folds are identical.
+RebalancedCV contains the following classes: [__RebalancedLeaveOneOut__](RebalancedLeaveOneOut.html), [__RebalancedKFold__](RebalancedKFold.html), [__RebalancedLeavePOut__](RebalancedLeavePOut.html), [__RebalancedLeaveOneGroupOut__](RebalancedLeaveOneGroupOut.html), [__RebalancedLeaveOneOutRegression__](RebalancedLeaveOneOutRegression.html), and [__MulticlassRebalancedLeaveOneOut__](MulticlassRebalancedLeaveOneOut.html). These are implementations for `Leave One Out`, `Stratified K-Fold`, `Leave P Out`, and `Leave One Group Out` cross-validation with sub-sampling within training sets to ensure that, for any cross-validation scheme, the class balances across all training folds are identical.
 
 <br>
 For any support using RebalancedCV, please use our <a href="https://github.com/korem-lab/RebalancedCV/issues">issues page</a> or email [gia2105@columbia.edu](gia2105@columbia.edu). 
@@ -87,7 +87,7 @@ The only dependencies are `python` and `scikit-learn`
 ## Loading
 
 ```python
-from rebalancedcv import RebalancedLeaveOneOut, RebalancedKFold, RebalancedLeavePOut, RebalancedLeaveOneOutRegression, MulticlassRebalancedLeaveOneOut
+from rebalancedcv import RebalancedLeaveOneOut, RebalancedKFold, RebalancedLeavePOut, RebalancedLeaveOneGroupOut, RebalancedLeaveOneOutRegression, MulticlassRebalancedLeaveOneOut
 ```
 <br>
 
@@ -143,13 +143,13 @@ print('Rebalanceed Leave-one-out auROC: {:.2f}'\
 
 As demonstrated in this example, neglecting to account for distributional bias in the cross-validation classes can greatly decrease evaluated model performance. For more details on why this happens, please refer to [our manuscript](https://arxiv.org/abs/2406.01652).
 
-We note that the example's code structure approach would apply to this package's other `RebalancedKFold`, `RebalancedLeavePOut`, and `RebalancedLeaveOneOutRegression` classes.
+We note that the example's code structure approach would apply to this package's other `RebalancedKFold`, `RebalancedLeavePOut`, `RebalancedLeaveOneGroupOut`, and `RebalancedLeaveOneOutRegression` classes.
 
 
 
-All classes from this package provide train/test indices to split data in train/test sets while rebalancing the training set to account for distributional bias. This package is designed to enable automated rebalancing for the cross-validation implementations in scikit-learn's `LeaveOneOut`, `StratifiedKFold`, and `LeavePOut`, through the `RebalancedCV` classes `RebalancedLeaveOneOut`, `RebalancedKFold`, `RebalancedLeavePOut`, and `RebalancedLeaveOneOutRegression`. These Rebalanced classes are designed to work in the exact same code structure and implementation use cases as their scikit-learn equivalents, with the only difference being a subsampling within the provided training indices. 
+All classes from this package provide train/test indices to split data in train/test sets while rebalancing the training set to account for distributional bias. This package is designed to enable automated rebalancing for the cross-validation implementations in scikit-learn's `LeaveOneOut`, `StratifiedKFold`, `LeavePOut`, and `LeaveOneGroupOut`, through the `RebalancedCV` classes `RebalancedLeaveOneOut`, `RebalancedKFold`, `RebalancedLeavePOut`, `RebalancedLeaveOneGroupOut`, and `RebalancedLeaveOneOutRegression`. These Rebalanced classes are designed to work in the exact same code structure and implementation use cases as their scikit-learn equivalents, with the only difference being a subsampling within the provided training indices. 
 
-For more details, we provide further background and walkthroughs for each of these three classes in their respective documentation tabs.
+For more details, we provide further background and walkthroughs for each class in their respective documentation tabs.
 
 <br>
 

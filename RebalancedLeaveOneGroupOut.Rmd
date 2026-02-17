@@ -1,0 +1,207 @@
+---
+title: 
+output: 
+    html_document:
+       theme: yeti
+---
+
+<style>
+.darkgreen {
+  background-color: #577836;
+  color: white;
+  border: 2px solid black;
+  margin: 20px;
+  padding: 20px;
+} 
+  li {
+    list-style-type: none
+  }
+</style>
+
+<style>
+    body { 
+            background-color: #4D251C;
+            text-color: whitesmoke;
+            color: whitesmoke;
+            font-family: Palatino;
+            font-size: 12pt;
+            margin: 20px;
+            padding: 20px;
+            }
+   a:link {
+            color: #577836; 
+            background-color: transparent; 
+            }
+  a:visited {
+            color: #577836;
+            background-color: transparent;
+          }
+  a:active {
+    color: #577836;
+    background-color: transparent;
+  }
+  a:hover {
+    color: #577836;
+    background-color: transparent;
+    text-decoration: underline;
+  }
+</style>
+
+<br>
+<center> <h1> rebalancedcv.**RebalancedLeaveOneGroupOut** </h1> </center>
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy(c('r', 'python', 'bash'), 
+               position = c("top", "right"),
+               color='brown',
+               tooltip_message = "Copy",
+               tooltip_success = "Copied!"
+               )
+```
+
+<style>
+.darkgrey {
+  background-color: #333333;
+  color: white;
+  border: 2px solid #577836;
+  margin: 20px;
+  padding:10px;
+} 
+</style>
+<div class="darkgrey">
+*class* rebalancedcv.**RebalancedLeaveOneGroupOut**()
+</div>
+<br>
+
+Description
+------------
+
+<div class="darkgreen">
+Rebalanced Leave-One-Group-Out cross-validator.
+
+Provides train/test indices to split data in train/test sets. 
+Each fold holds out one group as the test set and uses the remaining samples as the training set, 
+with subsampling so that every training fold has the same number of samples per class (avoiding distributional bias across folds). 
+
+This class is designed to have the same functionality and implementation structure as scikit-learn's <code>LeaveOneGroupOut()</code> with the same rebalancing idea as the rest of this package. 
+
+The <code>groups</code> parameter is <b>required</b> and defines the folds; rebalancing is applied only to the training set within each fold.
+
+<b>Test sets are not rebalanced.</b> Each test set is the full left-out group. This keeps the evaluation representative of that group's real composition and matches the usual goal of group-out cross-validation (generalization to a group as-is).
+
+At least two groups are required. For rebalancing to be non-degenerate, every class should appear in at least two groups so that when one group is left out, every class still has at least one sample in the training set.
+
+<b>When to use:</b> Use this rebalancing when you care about a comparable evaluation across folds (e.g. reporting an average over groups or comparing groups) and want to remove the bias from training-set class balance varying by which group is left out. 
+<b>Plain LeaveOneGroupOut</b> may be preferred when you only care about performance on each left-out group "as-is" under natural train composition, or when groups already have very similar class distributions (in which case it doesn't necessarily hurt).
+</div>
+
+Parameters
+-----------
+
+<div class="darkgreen">
+* <b>No constructor parameters.</b> The <code>groups</code> argument must be passed to <code>split(X, y, groups)</code> and <code>get_n_splits(groups=groups)</code>.
+</div>
+
+Examples
+--------
+
+
+```python
+### Observing the indices on a small example dataset (2 groups)
+### Train sets are subsampled so each fold has the same class balance (here, 1 sample per class is kept in each train fold).
+import numpy as np
+np.random.seed(1)
+from rebalancedcv import RebalancedLeaveOneGroupOut
+X = np.array([[1, 2], [3, 4], [5, 6], [7, 8], [9, 10], [11, 12]])
+y = np.array([0, 0, 1, 1, 0, 1])
+groups = np.array([1, 1, 1, 2, 2, 2])
+rlogo = RebalancedLeaveOneGroupOut()
+print("Number of splits:", rlogo.get_n_splits(groups=groups))
+for i, (train_index, test_index) in enumerate(rlogo.split(X, y, groups, seed=1)):
+    print(f"Fold {i}:")
+    print(f"  Train: index={train_index}")
+    print(f"  Test:  index={test_index}")
+```
+
+    Number of splits: 2
+    Fold 0:
+      Train: index=[3 4]
+      Test:  index=[0 1 2]
+    Fold 1:
+      Train: index=[0 2]
+      Test:  index=[3 4 5]
+
+
+<br>
+
+
+Methods
+--------
+
+The methods of the `RebalancedLeaveOneGroupOut` class are designed to enable identical functionality to scikit-learn's [`LeaveOneGroupOut`](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.LeaveOneGroupOut.html), with rebalancing applied only to the training set.
+
+<!-- <div class="alert alert-block alert-success"> -->
+<div class="darkgreen">
+<b>get_n_splits(X=None, y=None, groups=None)</b>
+<hr style="height: 2.5px; background-color: white; margin: 1px">
+  * Returns the number of splitting iterations (number of unique groups).
+* <hr style="height: 2.5px; background-color: white; margin: 1px">
+    * <u><b>Parameters</b></u>
+      * <b>X : object, default=None</b>
+        * Ignored, exists for API compatibility.
+      * <b>y : object, default=None</b>
+        * Ignored, exists for API compatibility.
+      * <b>groups : array-like of shape (n_samples,)</b>
+        * <b>Required.</b> Group labels for the samples; must be provided to compute the number of splits.
+  * <hr style="height: 2.5px; background-color: white; margin: 1px">
+  * <u><b>Returns</b></u>
+       * <b>n_splits : int</b>
+          * The number of splitting iterations (number of unique groups).
+</div>
+
+<div class="darkgreen">
+<b>split(X, y, groups=None, seed=None)</b> 
+<hr style="height: 2.5px; background-color: white; margin: 1px">
+  * Generate indices to split data into training and test set. Only the training set is subsampled for consistent class balance; test sets are the full left-out group.
+* <hr style="height: 2.5px; background-color: white; margin: 1px">
+    * <u><b>Parameters</b></u>
+      * <b>X : array-like of shape (n_samples, n_features)</b>
+        * Training data, where <code>n_samples</code> is the number of samples and <code>n_features</code> is the number of features.
+      * <b>y : array-like of shape (n_samples,)</b>
+        * The target variable for supervised learning (classification).
+      * <b>groups : array-like of shape (n_samples,)</b>
+        * <b>Required.</b> Group labels for each sample. Each fold holds out one unique group as test and uses the rest for training (then subsampled for consistent class balance).
+      * <b>seed : int, default=None</b>
+        * Random seed for subsampling reproducibility.
+  * <hr style="height: 2.5px; background-color: white; margin: 1px">
+  * <u><b>Yields</b></u>
+      * <b>train : ndarray</b>
+        * The training set indices (subsampled for consistent class balance).
+      * <b>test : ndarray</b>
+        * The testing set indices (all samples in the left-out group).    
+</div>
+
+
+<style>
+.seealso {
+  background-color: #F6B302;
+  color: black;
+  border: 2px solid black;
+  margin: 20px;
+  padding: 20px;
+} 
+</style>
+
+<div class="seealso">
+**See also:**<br>
+[__RebalancedLeaveOneOut__](RebalancedLeaveOneOut.html)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Leave-one-out iterator with training set rebalancing<br>
+[__RebalancedKFold__](RebalancedKFold.html)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Stratified K-fold iterator with training set rebalancing<br>
+[__RebalancedLeavePOut__](RebalancedLeavePOut.html)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Leave-P-out iterator with training set rebalancing<br>
+<br>
+For more background on LeaveOneGroupOut, refer to the scikit-learn [User Guide](https://scikit-learn.org/stable/modules/cross_validation.html#leave-one-group-out).
+    </div>
