@@ -11,15 +11,15 @@
 
 
 
-<title>RebalancedCV: Solving distributional bias during cross-validation</title>
+<title>RebalancedLeaveOneGroupOut.knit</title>
 
-<script src="index_files/header-attrs-2.30/header-attrs.js"></script>
-<script src="index_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="RebalancedLeaveOneGroupOut_files/header-attrs-2.30/header-attrs.js"></script>
+<script src="RebalancedLeaveOneGroupOut_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="index_files/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
-<script src="index_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
-<script src="index_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
-<script src="index_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<link href="RebalancedLeaveOneGroupOut_files/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
+<script src="RebalancedLeaveOneGroupOut_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="RebalancedLeaveOneGroupOut_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="RebalancedLeaveOneGroupOut_files/bootstrap-3.3.5/shim/respond.min.js"></script>
 <style>h1 {font-size: 34px;}
        h1.title {font-size: 38px;}
        h2 {font-size: 30px;}
@@ -29,15 +29,15 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
-<script src="index_files/navigation-1.1/tabsets.js"></script>
-<link href="index_files/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
-<script src="index_files/highlightjs-9.12.0/highlight.js"></script>
-<script src="index_files/clipboard-1.7.1/clipboard.min.js"></script>
-<link href="index_files/primer-tooltips-1.4.0/build.css" rel="stylesheet" />
-<link href="index_files/klippy-0.0.0.9500/css/klippy.min.css" rel="stylesheet" />
-<script src="index_files/klippy-0.0.0.9500/js/klippy.min.js"></script>
-<link href="index_files/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
-<link href="index_files/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
+<script src="RebalancedLeaveOneGroupOut_files/navigation-1.1/tabsets.js"></script>
+<link href="RebalancedLeaveOneGroupOut_files/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="RebalancedLeaveOneGroupOut_files/highlightjs-9.12.0/highlight.js"></script>
+<script src="RebalancedLeaveOneGroupOut_files/clipboard-1.7.1/clipboard.min.js"></script>
+<link href="RebalancedLeaveOneGroupOut_files/primer-tooltips-1.4.0/build.css" rel="stylesheet" />
+<link href="RebalancedLeaveOneGroupOut_files/klippy-0.0.0.9500/css/klippy.min.css" rel="stylesheet" />
+<script src="RebalancedLeaveOneGroupOut_files/klippy-0.0.0.9500/js/klippy.min.js"></script>
+<link href="RebalancedLeaveOneGroupOut_files/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
+<link href="RebalancedLeaveOneGroupOut_files/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -325,8 +325,6 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore"><strong>RebalancedCV</strong>: Solving
-distributional bias during cross-validation</h1>
 
 </div>
 
@@ -339,6 +337,9 @@ distributional bias during cross-validation</h1>
   margin: 20px;
   padding: 20px;
 } 
+  li {
+    list-style-type: none
+  }
 </style>
 <style>
     body { 
@@ -350,178 +351,230 @@ distributional bias during cross-validation</h1>
             margin: 20px;
             padding: 20px;
             }
-  a:link {
-        color: lightblue; 
-        background-color: transparent; 
-      }
- a:visited {
-            color: lightpurple;
+   a:link {
+            color: #577836; 
+            background-color: transparent; 
+            }
+  a:visited {
+            color: #577836;
             background-color: transparent;
           }
   a:active {
-    color: lightpurple;
+    color: #577836;
     background-color: transparent;
   }
   a:hover {
-    color: lightpurple;
+    color: #577836;
     background-color: transparent;
     text-decoration: underline;
   }
-
 </style>
-<img src='images/RLOOCV-logo.png' align="right" height="300" />
-<link rel="icon" type="image/png" href="images/RLOOCV-logo.png" />
+<br>
+<center>
+<h1>
+rebalancedcv.<strong>RebalancedLeaveOneGroupOut</strong>
+</h1>
 </center>
-<style type="text/css">
-.bashform {
-  background-color: #577836;
-  border: 3px solid black;
-  font-weight: bold;
-  color: whitesmoke; 
-}
-</style>
-<hr />
 <script>
-  addClassKlippyTo("pre.r, pre.python, pre.bash, pre.bashform");
+  addClassKlippyTo("pre.r, pre.python, pre.bash");
   addKlippy('right', 'top', '#A52A2A', '1', 'Copy', 'Copied!');
 </script>
-<div class="body">
-<p>Welcome to <a href="index.html"><strong>RebalancedCV</strong></a>!
-This is a python package designed to facilitate correcting for
-distributional bias during cross validation.<br />
-<br></p>
-</div>
-<p>RebalancedCV contains the following classes: <a
-href="RebalancedLeaveOneOut.html"><strong>RebalancedLeaveOneOut</strong></a>,
-<a href="RebalancedKFold.html"><strong>RebalancedKFold</strong></a>, <a
-href="RebalancedLeavePOut.html"><strong>RebalancedLeavePOut</strong></a>,
-<a
-href="RebalancedLeaveOneGroupOut.html"><strong>RebalancedLeaveOneGroupOut</strong></a>,
-<a
-href="RebalancedLeaveOneOutRegression.html"><strong>RebalancedLeaveOneOutRegression</strong></a>,
-and <a
-href="MulticlassRebalancedLeaveOneOut.html"><strong>MulticlassRebalancedLeaveOneOut</strong></a>.
-These are implementations for <code>Leave One Out</code>,
-<code>Stratified K-Fold</code>, <code>Leave P Out</code>, and
-<code>Leave One Group Out</code> cross-validation with sub-sampling
-within training sets to ensure that, for any cross-validation scheme,
-the class balances across all training folds are identical.</p>
-<p><br> For any support using RebalancedCV, please use our
-<a href="https://github.com/korem-lab/RebalancedCV/issues">issues
-page</a> or email <a
-href="gia2105@columbia.edu">gia2105@columbia.edu</a>. <br></p>
-<div id="installation" class="section level2">
-<h2>Installation</h2>
-<pre class="bashform"><code>pip install RebalancedCV</code></pre>
-<p>The only dependencies are <code>python</code> and
-<code>scikit-learn</code> <br><br></p>
-</div>
-<div id="loading" class="section level2">
-<h2>Loading</h2>
-<pre class="python"><code>from rebalancedcv import RebalancedLeaveOneOut, RebalancedKFold, RebalancedLeavePOut, RebalancedLeaveOneGroupOut, RebalancedLeaveOneOutRegression, MulticlassRebalancedLeaveOneOut</code></pre>
-<p><br></p>
-</div>
-<div id="background-analysis" class="section level2">
-<h2>Background &amp; Analysis</h2>
-<p>It was recently shown that removing a fraction of a dataset into a
-testing fold can artificially create a shift in label averages across
-training folds that is inversely correlated with that of their
-corresponding test folds. To address the issue, this package
-automatically subsamples points from within the training set to remove
-any differences in label average across training folds.</p>
-<p>The following example illustrates how this small correction can have
-a large impact on machine learning performance metrics, with code
-demonstrations of scikit-learn’s <code>LeaveOneOut</code> and
-RebalancedCV’s <code>RebalancedLeaveOneOut</code>. This analysis uses a
-randomly generated observation matrix <code>X</code> and a binary
-outcome vector <code>y</code>. By construction, this is an example for
-which a fair evaluation of a machine learning model should be close to
-the expected performance of a random guess, which is 0.5.</p>
-<pre class="python"><code>import numpy as np 
-import pandas as pd
-from sklearn.linear_model import LogisticRegressionCV
-from sklearn.model_selection import LeaveOneOut
-from rebalancedcv import RebalancedLeaveOneOut
-from sklearn.metrics import roc_auc_score
-np.random.seed(1)
-
-## given some random `X` matrix, and a `y` binary vector
-X = np.random.rand(100, 10)
-y = np.random.rand(100) &gt; 0.5
-
-## Leave-one-out evaluation
-loo = LeaveOneOut()
-loocv_predictions = [ LogisticRegressionCV()\
-                                .fit(X[train_index], y[train_index])\
-                                .predict_proba(X[test_index]
-                                            )[:, 1][0]
-              for train_index, test_index in loo.split(X, y) ]
-
-## Since all the data is random, a fair evaluation
-## should yield au auROC close to 0.5
-print(&#39;Leave One Out auROC: {:.2f}&#39;\
-              .format( roc_auc_score(y, loocv_predictions) ) )
-
-## Rebalanced leave-one-out evaluation
-rloo = RebalancedLeaveOneOut()
-rloocv_predictions = [ LogisticRegressionCV()\
-                                .fit(X[train_index], y[train_index])\
-                                .predict_proba(X[test_index]
-                                            )[:, 1][0]
-              for train_index, test_index in rloo.split(X, y) ]
-
-## Since all the data is random, a fair evaluation
-## should yield au auROC close to 0.5
-print(&#39;Rebalanceed Leave-one-out auROC: {:.2f}&#39;\
-              .format(  roc_auc_score(y, rloocv_predictions) ) )</code></pre>
-<pre><code>Leave One Out auROC: 0.00
-Rebalanceed Leave-one-out auROC: 0.48</code></pre>
-<p>As demonstrated in this example, neglecting to account for
-distributional bias in the cross-validation classes can greatly decrease
-evaluated model performance. For more details on why this happens,
-please refer to <a href="https://arxiv.org/abs/2406.01652">our
-manuscript</a>.</p>
-<p>We note that the example’s code structure approach would apply to
-this package’s other <code>RebalancedKFold</code>,
-<code>RebalancedLeavePOut</code>,
-<code>RebalancedLeaveOneGroupOut</code>, and
-<code>RebalancedLeaveOneOutRegression</code> classes.</p>
-<p>All classes from this package provide train/test indices to split
-data in train/test sets while rebalancing the training set to account
-for distributional bias. This package is designed to enable automated
-rebalancing for the cross-validation implementations in scikit-learn’s
-<code>LeaveOneOut</code>, <code>StratifiedKFold</code>,
-<code>LeavePOut</code>, and <code>LeaveOneGroupOut</code>, through the
-<code>RebalancedCV</code> classes <code>RebalancedLeaveOneOut</code>,
-<code>RebalancedKFold</code>, <code>RebalancedLeavePOut</code>,
-<code>RebalancedLeaveOneGroupOut</code>, and
-<code>RebalancedLeaveOneOutRegression</code>. These Rebalanced classes
-are designed to work in the exact same code structure and implementation
-use cases as their scikit-learn equivalents, with the only difference
-being a subsampling within the provided training indices.</p>
-<p>For more details, we provide further background and walkthroughs for
-each class in their respective documentation tabs.</p>
-<p><br></p>
-</div>
-<div id="citation" class="section level2">
-<h2>Citation</h2>
 <style>
-.citation {
-  background-color: #262C56;
+.darkgrey {
+  background-color: #333333;
   color: white;
+  border: 2px solid #577836;
+  margin: 20px;
+  padding:10px;
+} 
+</style>
+<div class="darkgrey">
+<p><em>class</em>
+rebalancedcv.<strong>RebalancedLeaveOneGroupOut</strong>()</p>
+</div>
+<p><br></p>
+<div id="description" class="section level2">
+<h2>Description</h2>
+<div class="darkgreen">
+<p>Rebalanced Leave-One-Group-Out cross-validator.</p>
+<p>Provides train/test indices to split data in train/test sets. Each
+fold holds out one group as the test set and uses the remaining samples
+as the training set, with subsampling so that every training fold has
+the same number of samples per class (avoiding distributional bias
+across folds).</p>
+<p>This class is designed to have the same functionality and
+implementation structure as scikit-learn’s
+<code>LeaveOneGroupOut()</code> with the same rebalancing idea as the
+rest of this package.</p>
+<p>The <code>groups</code> parameter is <b>required</b> and defines the
+folds; rebalancing is applied only to the training set within each
+fold.</p>
+<p><b>Test sets are not rebalanced.</b> Each test set is the full
+left-out group. This keeps the evaluation representative of that group’s
+real composition and matches the usual goal of group-out
+cross-validation (generalization to a group as-is).</p>
+<p>At least two groups are required. For rebalancing to be
+non-degenerate, every class should appear in at least two groups so that
+when one group is left out, every class still has at least one sample in
+the training set.</p>
+<p><b>When to use:</b> Use this rebalancing when you care about a
+comparable evaluation across folds (e.g. reporting an average over
+groups or comparing groups) and want to remove the bias from
+training-set class balance varying by which group is left out. <b>Plain
+LeaveOneGroupOut</b> may be preferred when you only care about
+performance on each left-out group “as-is” under natural train
+composition, or when groups already have very similar class
+distributions (in which case it doesn’t necessarily hurt).</p>
+</div>
+</div>
+<div id="parameters" class="section level2">
+<h2>Parameters</h2>
+<div class="darkgreen">
+<ul>
+<li><b>No constructor parameters.</b> The <code>groups</code> argument
+must be passed to <code>split(X, y, groups)</code> and
+<code>get_n_splits(groups=groups)</code>.</li>
+</ul>
+</div>
+</div>
+<div id="examples" class="section level2">
+<h2>Examples</h2>
+<pre class="python"><code>### Observing the indices on a small example dataset (2 groups)
+### Train sets are subsampled so each fold has the same class balance (here, 1 sample per class is kept in each train fold).
+import numpy as np
+np.random.seed(1)
+from rebalancedcv import RebalancedLeaveOneGroupOut
+X = np.array([[1, 2], [3, 4], [5, 6], [7, 8], [9, 10], [11, 12]])
+y = np.array([0, 0, 1, 1, 0, 1])
+groups = np.array([1, 1, 1, 2, 2, 2])
+rlogo = RebalancedLeaveOneGroupOut()
+print(&quot;Number of splits:&quot;, rlogo.get_n_splits(groups=groups))
+for i, (train_index, test_index) in enumerate(rlogo.split(X, y, groups, seed=1)):
+    print(f&quot;Fold {i}:&quot;)
+    print(f&quot;  Train: index={train_index}&quot;)
+    print(f&quot;  Test:  index={test_index}&quot;)</code></pre>
+<pre><code>Number of splits: 2
+Fold 0:
+  Train: index=[3 4]
+  Test:  index=[0 1 2]
+Fold 1:
+  Train: index=[0 2]
+  Test:  index=[3 4 5]</code></pre>
+<p><br></p>
+</div>
+<div id="methods" class="section level2">
+<h2>Methods</h2>
+<p>The methods of the <code>RebalancedLeaveOneGroupOut</code> class are
+designed to enable identical functionality to scikit-learn’s <a
+href="https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.LeaveOneGroupOut.html"><code>LeaveOneGroupOut</code></a>,
+with rebalancing applied only to the training set.</p>
+<!-- <div class="alert alert-block alert-success"> -->
+<div class="darkgreen">
+<b>get_n_splits(X=None, y=None, groups=None)</b>
+<hr style="height: 2.5px; background-color: white; margin: 1px">
+<ul>
+<li>Returns the number of splitting iterations (number of unique
+groups).</li>
+<li><hr style="height: 2.5px; background-color: white; margin: 1px">
+<ul>
+<li><u><b>Parameters</b></u>
+<ul>
+<li><b>X : object, default=None</b>
+<ul>
+<li>Ignored, exists for API compatibility.</li>
+</ul></li>
+<li><b>y : object, default=None</b>
+<ul>
+<li>Ignored, exists for API compatibility.</li>
+</ul></li>
+<li><b>groups : array-like of shape (n_samples,)</b>
+<ul>
+<li><b>Required.</b> Group labels for the samples; must be provided to
+compute the number of splits.</li>
+</ul></li>
+</ul></li>
+<li><hr style="height: 2.5px; background-color: white; margin: 1px"></li>
+<li><u><b>Returns</b></u>
+<ul>
+<li><b>n_splits : int</b>
+<ul>
+<li>The number of splitting iterations (number of unique groups).
+</div></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+<div class="darkgreen">
+<b>split(X, y, groups=None, seed=None)</b>
+<hr style="height: 2.5px; background-color: white; margin: 1px">
+<ul>
+<li>Generate indices to split data into training and test set. Only the
+training set is subsampled for consistent class balance; test sets are
+the full left-out group.</li>
+<li><hr style="height: 2.5px; background-color: white; margin: 1px">
+<ul>
+<li><u><b>Parameters</b></u>
+<ul>
+<li><b>X : array-like of shape (n_samples, n_features)</b>
+<ul>
+<li>Training data, where <code>n_samples</code> is the number of samples
+and <code>n_features</code> is the number of features.</li>
+</ul></li>
+<li><b>y : array-like of shape (n_samples,)</b>
+<ul>
+<li>The target variable for supervised learning (classification).</li>
+</ul></li>
+<li><b>groups : array-like of shape (n_samples,)</b>
+<ul>
+<li><b>Required.</b> Group labels for each sample. Each fold holds out
+one unique group as test and uses the rest for training (then subsampled
+for consistent class balance).</li>
+</ul></li>
+<li><b>seed : int, default=None</b>
+<ul>
+<li>Random seed for subsampling reproducibility.</li>
+</ul></li>
+</ul></li>
+<li><hr style="height: 2.5px; background-color: white; margin: 1px"></li>
+<li><u><b>Yields</b></u>
+<ul>
+<li><b>train : ndarray</b>
+<ul>
+<li>The training set indices (subsampled for consistent class
+balance).</li>
+</ul></li>
+<li><b>test : ndarray</b>
+<ul>
+<li>The testing set indices (all samples in the left-out group).<br />
+
+</div></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+<style>
+.seealso {
+  background-color: #F6B302;
+  color: black;
   border: 2px solid black;
   margin: 20px;
   padding: 20px;
-  }
 } 
 </style>
-<div class="citation">
-<p>Austin, G.I., Pe’er I., &amp; Korem T. “Distributional bias
-compromises leave-one-out cross-validation” Science Advances 11(48):
-eadx6976 (2025). <a
-href="https://doi.org/10.1126/sciadv.adx6976">10.1126/sciadv.adx6976</a></p>
+<div class="seealso">
+<strong>See also:</strong><br> <a
+href="RebalancedLeaveOneOut.html"><strong>RebalancedLeaveOneOut</strong></a><br>
+       Leave-one-out iterator with training set rebalancing<br> <a
+href="RebalancedKFold.html"><strong>RebalancedKFold</strong></a><br>
+       Stratified K-fold iterator with training set rebalancing<br> <a
+href="RebalancedLeavePOut.html"><strong>RebalancedLeavePOut</strong></a><br>
+       Leave-P-out iterator with training set rebalancing<br> <br> For
+more background on LeaveOneGroupOut, refer to the scikit-learn <a
+href="https://scikit-learn.org/stable/modules/cross_validation.html#leave-one-group-out">User
+Guide</a>.
 </div>
-<!-- Austin, G.I. et al. "Distributional bias compromises leave-one-out cross-validation" (2024). https://arxiv.org/abs/2406.01652 -->
+</div>
+</div>
 </div>
 
 
